@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 export default function Profile() {
   const [profile, setProfile] = useState({ name: '', email: '', currentRole: '', targetRole: '', yearsExperience: '' });
@@ -11,7 +13,10 @@ export default function Profile() {
   useEffect(() => {
     const name = localStorage.getItem('userName') || 'User';
     const email = localStorage.getItem('userEmail') || '';
-    setProfile({ name, email, currentRole: 'Mid-Level Engineer', targetRole: 'Senior Architect', yearsExperience: '8' });
+    const currentRole = localStorage.getItem('currentRole') || 'Mid-Level Engineer';
+    const targetRole = localStorage.getItem('targetRole') || 'Senior Architect';
+    const yearsExperience = localStorage.getItem('yearsExperience') || '8';
+    setProfile({ name, email, currentRole, targetRole, yearsExperience });
   }, []);
 
   const handleChange = (e) => {
@@ -20,13 +25,23 @@ export default function Profile() {
 
   const handleSave = () => {
     localStorage.setItem('userName', profile.name);
+    localStorage.setItem('userEmail', profile.email);
+    localStorage.setItem('currentRole', profile.currentRole);
+    localStorage.setItem('targetRole', profile.targetRole);
+    localStorage.setItem('yearsExperience', profile.yearsExperience);
     setEditing(false);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('userName');
     localStorage.removeItem('userEmail');
+    localStorage.removeItem('userToken');
     router.push('/login');
   };
 

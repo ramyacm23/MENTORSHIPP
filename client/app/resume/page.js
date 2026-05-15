@@ -177,7 +177,7 @@ export default function ResumeLab() {
               disabled={!resumeText.trim() || loading}
               className="w-full py-3 bg-[#4edea3] hover:brightness-110 disabled:opacity-50 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2"
             >
-              <span className="material-symbols-outlined">{loading ? 'autorenew' : 'smart_toy'}</span>
+              <span className={`material-symbols-outlined ${loading ? 'animate-spin' : ''}`}>{loading ? 'autorenew' : 'smart_toy'}</span>
               {loading ? 'Analyzing...' : 'Analyze Resume'}
             </button>
           </div>

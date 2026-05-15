@@ -138,6 +138,7 @@ export default function Interview() {
 
   const generateInterviewQuestions = async () => {
     setIsLoadingQuestions(true);
+    let questions = [];
     try {
       const prompt = `You are an expert interviewer. Generate exactly 15 tailored interview questions based on this profile:
 
@@ -172,20 +173,22 @@ Respond ONLY as JSON: {"questions": ["Q1?", "Q2?", ...]}`;
           const match = text.match(/\{[\s\S]*\}/);
           if (match) {
             const parsed = JSON.parse(match[0]);
-            setGeneratedQuestions(parsed.questions || []);
-          } else {
-            setGeneratedQuestions(getDefaultQuestions());
+            questions = parsed.questions || [];
           }
         } catch (e) {
-          setGeneratedQuestions(getDefaultQuestions());
+          // fall through to default
         }
-      } else {
-        setGeneratedQuestions(getDefaultQuestions());
       }
     } catch (error) {
-      setGeneratedQuestions(getDefaultQuestions());
+      // fall through to default
     }
+
+    if (questions.length === 0) {
+      questions = getDefaultQuestions();
+    }
+    setGeneratedQuestions(questions);
     setIsLoadingQuestions(false);
+    return questions;
   };
 
   const evaluateEntireInterview = async () => {
@@ -330,11 +333,11 @@ Provide detailed evaluation as JSON:
 
   const startInterview = async () => {
     setStage('interview');
-    await generateInterviewQuestions();
-    if (generatedQuestions.length === 0) {
-      setGeneratedQuestions(getDefaultQuestions());
-    }
+    const questions = await generateInterviewQuestions();
     setQuestionIndex(0);
+    if (questions.length > 0) {
+      speakQuestion(questions[0]);
+    }
   };
 
   const nextQuestion = async () => {
@@ -428,7 +431,7 @@ Provide detailed evaluation as JSON:
                 placeholder={setupQuestions[setupStep].placeholder}
                 value={setupAnswers[setupQuestions[setupStep].id]}
                 onChange={(e) => handleSetupChange(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSetupNext()}
+                onKeyDown={(e) => e.key === 'Enter' && handleSetupNext()}
                 autoFocus
                 className="w-full px-4 py-3 rounded-lg bg-surface-container-low border-2 border-outline text-on-surface placeholder-on-surface-variant focus:border-primary focus:outline-none transition"
               />
