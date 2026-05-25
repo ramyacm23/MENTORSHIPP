@@ -245,11 +245,7 @@ async function downloadRoadmapPDF() {
           Back to Analyzer
         </button>
 
-        <div className={s.eyebrow}>
-          <span className={s.edot} />
-          Software Engineering · 9 Skills
-        </div>
-        <h1 className={s.pageTitle}>Your <em>Skills</em> Roadmap</h1>
+        <h1 className={s.pageTitle}>Your <em>Learning</em> Path</h1>
         <p className={s.subtitle}>
           One dedicated phase per skill — logically ordered so each one builds on the last.
           Topics, resources, and outcomes for every step.
