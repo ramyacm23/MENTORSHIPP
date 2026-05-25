@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Skills Learning Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet"/>
+<style>
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000;--surface:#0a0f1a;--sc:#111827;--sch:#222a3d;--scx:#2d3449;
+  --ob:#B9B9B9;--os:#9aa5b8;
+  --primary:#adc6ff;--pc:#4d8eff;--sec:#4edea3;--ter:#b9c8de;
+  --warn:#ffb86c;--rose:#ff7eb3;--violet:#c4b5fd;--sky:#67e8f9;--lime:#a3e635;
+}
+html,body{background:var(--bg);color:var(--ob);font-family:'Inter',sans-serif;min-height:100%;overflow-x:hidden}
+
+.blob{position:fixed;border-radius:50%;filter:blur(100px);opacity:.065;pointer-events:none;z-index:0}
+.b1{width:600px;height:600px;background:var(--pc);top:-200px;left:-180px}
+.b2{width:500px;height:500px;background:var(--sec);bottom:-160px;right:-120px}
+.b3{width:300px;height:300px;background:var(--rose);top:45%;left:58%}
+
+.wrap{position:relative;z-index:1;max-width:1060px;margin:0 auto;padding:52px 24px 100px}
+
+/* Header */
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--sec);margin-bottom:12px}
+.edot{width:6px;height:6px;border-radius:50%;background:var(--sec);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-family:'Manrope',sans-serif;font-weight:800;font-size:clamp(2rem,5vw,3.1rem);color:#fff;line-height:1.1;margin-bottom:12px}
+h1 em{font-style:normal;color:var(--primary)}
+.subtitle{font-size:14.5px;line-height:1.75;color:var(--os);max-width:520px;margin-bottom:28px}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:48px}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;cursor:pointer;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;border:none;transition:opacity .18s,transform .14s}
+.btn-p{background:var(--pc);color:#fff}.btn-p:hover{opacity:.84;transform:translateY(-1px)}
+.btn-s{background:rgba(173,198,255,.07);border:1px solid rgba(173,198,255,.18)!important;color:var(--primary)}.btn-s:hover{background:rgba(173,198,255,.13);transform:translateY(-1px)}
+.btn .material-symbols-outlined{font-size:16px}
+
+/* Phase grid — each skill its own card */
+.phases-grid{display:flex;flex-direction:column;gap:28px}
+
+.phase-block{border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.07);background:rgba(10,15,26,.7);backdrop-filter:blur(14px);animation:rise .5s ease-out both}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* stagger */
+.phase-block:nth-child(1){animation-delay:.04s}.phase-block:nth-child(2){animation-delay:.10s}
+.phase-block:nth-child(3){animation-delay:.16s}.phase-block:nth-child(4){animation-delay:.22s}
+.phase-block:nth-child(5){animation-delay:.28s}.phase-block:nth-child(6){animation-delay:.34s}
+.phase-block:nth-child(7){animation-delay:.40s}.phase-block:nth-child(8){animation-delay:.46s}
+.phase-block:nth-child(9){animation-delay:.52s}
+
+.phase-block:hover{border-color:rgba(255,255,255,.14);box-shadow:0 12px 48px rgba(0,0,0,.45)}
+.phase-block:hover .phase-accent{opacity:1}
+
+/* top accent stripe */
+.phase-accent{height:3px;opacity:.8;transition:opacity .25s}
+
+/* Phase header */
+.phase-header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px 16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.ph-left{display:flex;align-items:center;gap:14px}
+.phase-num{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-weight:800;font-size:16px;flex-shrink:0;border:2px solid}
+.phase-info{}
+.phase-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:3px;opacity:.75}
+.phase-name{font-family:'Manrope',sans-serif;font-weight:700;font-size:1.12rem;color:#fff;line-height:1.2}
+
+.ph-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;white-space:nowrap}
+.badge .material-symbols-outlined{font-size:13px}
+
+/* Body — 3 cols */
+.phase-body{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+@media(max-width:660px){.phase-body{grid-template-columns:1fr}}
+.pcol{padding:18px 20px}
+.pcol:not(:last-child){border-right:1px solid rgba(255,255,255,.05)}
+.col-lbl{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--os);margin-bottom:11px}
+.col-lbl .material-symbols-outlined{font-size:14px}
+
+/* topics */
+.topic-tags{display:flex;flex-wrap:wrap;gap:6px}
+.ttag{font-size:11.5px;font-weight:500;padding:3px 9px;border-radius:14px}
+
+/* resources */
+.res-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.res-list li{display:flex;align-items:flex-start;gap:7px;font-size:12.5px;line-height:1.5;color:var(--os)}
+.res-list li::before{content:'→';font-weight:700;flex-shrink:0}
+
+/* outcomes */
+.out-list{display:flex;flex-direction:column;gap:7px}
+.out-item{display:flex;align-items:flex-start;gap:6px;font-size:12.5px;line-height:1.5;color:var(--os)}
+.out-item .material-symbols-outlined{font-size:14px;flex-shrink:0;margin-top:1px}
+
+/* footer dep row */
+.dep-row{display:flex;align-items:center;flex-wrap:wrap;gap:6px;padding:10px 24px;background:rgba(255,255,255,.02);border-top:1px solid rgba(255,255,255,.05)}
+.dep-lbl{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--os);opacity:.5}
+.dep-chip{font-size:11px;font-weight:500;padding:2px 9px;border-radius:12px}
+
+/* color themes — 9 distinct palettes */
+/* P1 Python – emerald */
+.c1 .phase-accent{background:linear-gradient(90deg,#4edea3,#00c9a7)}
+.c1 .phase-num{color:#4edea3;border-color:#4edea3;background:rgba(78,222,163,.1)}
+.c1 .phase-label,.c1 .dep-lbl-color{color:#4edea3}
+.c1 .col-lbl .material-symbols-outlined{color:#4edea3}
+.c1 .ttag{background:rgba(78,222,163,.09);border:1px solid rgba(78,222,163,.22);color:#4edea3}
+.c1 .res-list li::before{color:#4edea3}
+.c1 .out-item .material-symbols-outlined{color:#4edea3}
+.c1 .badge-dur{background:rgba(78,222,163,.08);border:1px solid rgba(78,222,163,.2);color:#4edea3}
+.c1 .badge-lvl{background:rgba(78,222,163,.1);border:1px solid rgba(78,222,163,.25);color:#4edea3}
+.c1 .dep-chip{background:rgba(78,222,163,.1);border:1px solid rgba(78,222,163,.22);color:#4edea3}
+
+/* P2 Java – orange */
+.c2 .phase-accent{background:linear-gradient(90deg,#ffb86c,#ff7e3f)}
+.c2 .phase-num{color:#ffb86c;border-color:#ffb86c;background:rgba(255,184,108,.1)}
+.c2 .phase-label{color:#ffb86c}
+.c2 .col-lbl .material-symbols-outlined{color:#ffb86c}
+.c2 .ttag{background:rgba(255,184,108,.09);border:1px solid rgba(255,184,108,.22);color:#ffb86c}
+.c2 .res-list li::before{color:#ffb86c}
+.c2 .out-item .material-symbols-outlined{color:#ffb86c}
+.c2 .badge-dur{background:rgba(255,184,108,.08);border:1px solid rgba(255,184,108,.2);color:#ffb86c}
+.c2 .badge-lvl{background:rgba(255,184,108,.1);border:1px solid rgba(255,184,108,.25);color:#ffb86c}
+.c2 .dep-chip{background:rgba(255,184,108,.1);border:1px solid rgba(255,184,108,.22);color:#ffb86c}
+
+/* P3 DSA – violet */
+.c3 .phase-accent{background:linear-gradient(90deg,#c4b5fd,#8b5cf6)}
+.c3 .phase-num{color:#c4b5fd;border-color:#c4b5fd;background:rgba(196,181,253,.1)}
+.c3 .phase-label{color:#c4b5fd}
+.c3 .col-lbl .material-symbols-outlined{color:#c4b5fd}
+.c3 .ttag{background:rgba(196,181,253,.09);border:1px solid rgba(196,181,253,.22);color:#c4b5fd}
+.c3 .res-list li::before{color:#c4b5fd}
+.c3 .out-item .material-symbols-outlined{color:#c4b5fd}
+.c3 .badge-dur{background:rgba(196,181,253,.08);border:1px solid rgba(196,181,253,.2);color:#c4b5fd}
+.c3 .badge-lvl{background:rgba(196,181,253,.1);border:1px solid rgba(196,181,253,.25);color:#c4b5fd}
+.c3 .dep-chip{background:rgba(196,181,253,.1);border:1px solid rgba(196,181,253,.22);color:#c4b5fd}
+
+/* P4 SQL – sky */
+.c4 .phase-accent{background:linear-gradient(90deg,#67e8f9,#06b6d4)}
+.c4 .phase-num{color:#67e8f9;border-color:#67e8f9;background:rgba(103,232,249,.1)}
+.c4 .phase-label{color:#67e8f9}
+.c4 .col-lbl .material-symbols-outlined{color:#67e8f9}
+.c4 .ttag{background:rgba(103,232,249,.09);border:1px solid rgba(103,232,249,.22);color:#67e8f9}
+.c4 .res-list li::before{color:#67e8f9}
+.c4 .out-item .material-symbols-outlined{color:#67e8f9}
+.c4 .badge-dur{background:rgba(103,232,249,.08);border:1px solid rgba(103,232,249,.2);color:#67e8f9}
+.c4 .badge-lvl{background:rgba(103,232,249,.1);border:1px solid rgba(103,232,249,.25);color:#67e8f9}
+.c4 .dep-chip{background:rgba(103,232,249,.1);border:1px solid rgba(103,232,249,.22);color:#67e8f9}
+
+/* P5 APIs – blue */
+.c5 .phase-accent{background:linear-gradient(90deg,#4d8eff,#2563eb)}
+.c5 .phase-num{color:#4d8eff;border-color:#4d8eff;background:rgba(77,142,255,.12)}
+.c5 .phase-label{color:#4d8eff}
+.c5 .col-lbl .material-symbols-outlined{color:#4d8eff}
+.c5 .ttag{background:rgba(77,142,255,.09);border:1px solid rgba(77,142,255,.22);color:#4d8eff}
+.c5 .res-list li::before{color:#4d8eff}
+.c5 .out-item .material-symbols-outlined{color:#4d8eff}
+.c5 .badge-dur{background:rgba(77,142,255,.08);border:1px solid rgba(77,142,255,.2);color:#4d8eff}
+.c5 .badge-lvl{background:rgba(77,142,255,.1);border:1px solid rgba(77,142,255,.25);color:#4d8eff}
+.c5 .dep-chip{background:rgba(77,142,255,.1);border:1px solid rgba(77,142,255,.22);color:#4d8eff}
+
+/* P6 React – pink */
+.c6 .phase-accent{background:linear-gradient(90deg,#ff7eb3,#f43f5e)}
+.c6 .phase-num{color:#ff7eb3;border-color:#ff7eb3;background:rgba(255,126,179,.1)}
+.c6 .phase-label{color:#ff7eb3}
+.c6 .col-lbl .material-symbols-outlined{color:#ff7eb3}
+.c6 .ttag{background:rgba(255,126,179,.09);border:1px solid rgba(255,126,179,.22);color:#ff7eb3}
+.c6 .res-list li::before{color:#ff7eb3}
+.c6 .out-item .material-symbols-outlined{color:#ff7eb3}
+.c6 .badge-dur{background:rgba(255,126,179,.08);border:1px solid rgba(255,126,179,.2);color:#ff7eb3}
+.c6 .badge-lvl{background:rgba(255,126,179,.1);border:1px solid rgba(255,126,179,.25);color:#ff7eb3}
+.c6 .dep-chip{background:rgba(255,126,179,.1);border:1px solid rgba(255,126,179,.22);color:#ff7eb3}
+
+/* P7 Docker – teal */
+.c7 .phase-accent{background:linear-gradient(90deg,#2dd4bf,#0d9488)}
+.c7 .phase-num{color:#2dd4bf;border-color:#2dd4bf;background:rgba(45,212,191,.1)}
+.c7 .phase-label{color:#2dd4bf}
+.c7 .col-lbl .material-symbols-outlined{color:#2dd4bf}
+.c7 .ttag{background:rgba(45,212,191,.09);border:1px solid rgba(45,212,191,.22);color:#2dd4bf}
+.c7 .res-list li::before{color:#2dd4bf}
+.c7 .out-item .material-symbols-outlined{color:#2dd4bf}
+.c7 .badge-dur{background:rgba(45,212,191,.08);border:1px solid rgba(45,212,191,.2);color:#2dd4bf}
+.c7 .badge-lvl{background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.25);color:#2dd4bf}
+.c7 .dep-chip{background:rgba(45,212,191,.1);border:1px solid rgba(45,212,191,.22);color:#2dd4bf}
+
+/* P8 AWS – amber */
+.c8 .phase-accent{background:linear-gradient(90deg,#fbbf24,#d97706)}
+.c8 .phase-num{color:#fbbf24;border-color:#fbbf24;background:rgba(251,191,36,.1)}
+.c8 .phase-label{color:#fbbf24}
+.c8 .col-lbl .material-symbols-outlined{color:#fbbf24}
+.c8 .ttag{background:rgba(251,191,36,.09);border:1px solid rgba(251,191,36,.22);color:#fbbf24}
+.c8 .res-list li::before{color:#fbbf24}
+.c8 .out-item .material-symbols-outlined{color:#fbbf24}
+.c8 .badge-dur{background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);color:#fbbf24}
+.c8 .badge-lvl{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.25);color:#fbbf24}
+.c8 .dep-chip{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.22);color:#fbbf24}
+
+/* P9 System Design – lavender */
+.c9 .phase-accent{background:linear-gradient(90deg,#adc6ff,#818cf8)}
+.c9 .phase-num{color:#adc6ff;border-color:#adc6ff;background:rgba(173,198,255,.1)}
+.c9 .phase-label{color:#adc6ff}
+.c9 .col-lbl .material-symbols-outlined{color:#adc6ff}
+.c9 .ttag{background:rgba(173,198,255,.09);border:1px solid rgba(173,198,255,.22);color:#adc6ff}
+.c9 .res-list li::before{color:#adc6ff}
+.c9 .out-item .material-symbols-outlined{color:#adc6ff}
+.c9 .badge-dur{background:rgba(173,198,255,.08);border:1px solid rgba(173,198,255,.2);color:#adc6ff}
+.c9 .badge-lvl{background:rgba(173,198,255,.1);border:1px solid rgba(173,198,255,.25);color:#adc6ff}
+.c9 .dep-chip{background:rgba(173,198,255,.1);border:1px solid rgba(173,198,255,.22);color:#adc6ff}
+
+/* footer */
+.footer{margin-top:60px;text-align:center;background:rgba(34,42,61,.35);backdrop-filter:blur(12px);border:1px solid rgba(173,198,255,.1);border-radius:20px;padding:40px 28px}
+.footer h2{font-family:'Manrope',sans-serif;font-weight:800;font-size:1.5rem;color:#fff;margin-bottom:8px}
+.footer p{color:var(--os);font-size:14px;margin-bottom:22px}
+.footer strong{color:var(--primary)}
+
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(173,198,255,.22);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(173,198,255,.48)}
+
+@media print {
+  .blob { display: none; }
+  .phase-block {
+    background: #0d1117 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    break-inside: avoid;
+  }
+  body, html { background: #000 !important; }
+}
+</style>
+</head>
+<body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+
+<div class="wrap" id="roadmap-content">
+
+  <div class="eyebrow"><span class="edot"></span>Software Engineering · {{ phases|length }} Skills</div>
+  <h1>Your <em>Skills</em> Roadmap</h1>
+  <p class="subtitle">One dedicated phase per skill — logically ordered so each one builds on the last. Topics, resources, and outcomes for every step.</p>
+
+  <div class="phases-grid">
+    {% for phase in phases %}
+    <div class="phase-block {{ phase.colorClass }}">
+      <div class="phase-accent"></div>
+      <div class="phase-header">
+        <div class="ph-left">
+          <div class="phase-num">{{ loop.index }}</div>
+          <div class="phase-info">
+            <div class="phase-label">Phase {{ loop.index }}</div>
+            <div class="phase-name">{{ phase.name }}</div>
+          </div>
+        </div>
+        <div class="ph-right">
+          <div class="badge badge-dur"><span class="material-symbols-outlined">schedule</span>{{ phase.duration }}</div>
+          <div class="badge badge-lvl">{{ phase.level }}</div>
+        </div>
+      </div>
+      <div class="phase-body">
+        <div class="pcol">
+          <div class="col-lbl"><span class="material-symbols-outlined">layers</span>Topics</div>
+          <div class="topic-tags">
+            {% for topic in phase.topics %}<span class="ttag">{{ topic }}</span>{% endfor %}
+          </div>
+        </div>
+        <div class="pcol">
+          <div class="col-lbl"><span class="material-symbols-outlined">school</span>Resources</div>
+          <ul class="res-list">
+            {% for r in phase.resources %}
+            <li>{% if r.href %}<a href="{{ r.href }}" style="color:inherit;text-decoration:none">{{ r.text }}</a>{% else %}{{ r.text }}{% endif %}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div class="pcol">
+          <div class="col-lbl"><span class="material-symbols-outlined">emoji_events</span>Outcomes</div>
+          <div class="out-list">
+            {% for o in phase.outcomes %}
+            <div class="out-item"><span class="material-symbols-outlined">check_circle</span>{{ o }}</div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <div class="dep-row">
+        {% for d in phase.deps %}
+          {% if d.label %}<span class="dep-lbl">{{ d.label }}</span>{% endif %}
+          {% if d.chip %}<span class="dep-chip">{{ d.chip }}</span>{% endif %}
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="footer">
+    <h2>All {{ phases|length }} skills — fully mapped 🚀</h2>
+    <p>Total estimated time: <strong>~{{ total_time }}</strong> at 1–2 hrs/day · {{ skill_order }}</p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -3,3 +3,5 @@ uvicorn
 groq
 pydantic
 python-dotenv
+jinja2
+playwright

@@ -20,7 +20,7 @@
   - [ ] Name: `mentorshipp-python-api`
   - [ ] Root Directory: `ai_service`
   - [ ] Runtime: `Python 3`
-  - [ ] Build: `pip install -r requirements.txt`
+  - [ ] Build: `pip install -r requirements.txt`, `playwright install chromium`
   - [ ] Start: `uvicorn main:app --host 0.0.0.0 --port 8000`
   - [ ] Plan: `Free`
 - [ ] Click "Create Web Service"
