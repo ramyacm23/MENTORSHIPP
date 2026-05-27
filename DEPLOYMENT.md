@@ -23,7 +23,7 @@ Your backend consists of two services that need to be deployed:
    - **Name**: `mentorshipp-python-api`
    - **Root Directory**: `ai_service`
    - **Runtime**: Python 3
-   - **Build Command**: `pip install -r requirements.txt`
+   - **Build Command**: `pip install -r requirements.txt`, `playwright install chromium`
    - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port 8000`
    - **Plan**: Free tier
 4. Click "Advanced" and add environment variable:

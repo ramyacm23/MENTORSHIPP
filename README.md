@@ -43,6 +43,7 @@ AI Career Mentor combines machine learning, personalized coaching, and interacti
    ```bash
    cd ai_service
    pip install -r requirements.txt
+   playwright install chromium
    python main.py
    ```
 
