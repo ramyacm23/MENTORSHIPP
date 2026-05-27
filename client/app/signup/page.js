@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -69,49 +69,49 @@ export default function Signup() {
     <main className="min-h-screen bg-surface-dim flex flex-col items-center justify-center relative overflow-hidden px-6">
       {/* Background decorative elements */}
       <div className="absolute inset-0 z-0 pointer-events-none">
-        <div className="absolute top-0 right-[10%] w-[500px] h-[500px] bg-[#4d8eff]/5 rounded-full blur-[120px]"></div>
-        <div className="absolute bottom-0 left-[10%] w-[400px] h[400px] bg-[#4edea3]/5 rounded-full blur-[100px]"></div>
+        <div className="absolute top-0 right-[10%] w-[500px] h-[500px] bg-primary-container/5 rounded-full blur-[120px]"></div>
+        <div className="absolute bottom-0 left-[10%] w-[400px] h[400px] bg-secondary/5 rounded-full blur-[100px]"></div>
       </div>
 
       <div className="z-10 w-full max-w-6xl grid md:grid-cols-12 gap-12 items-center">
         {/* Left Column: Branding */}
         <section className="hidden md:flex md:col-span-5 flex-col space-y-8">
           <header>
-            <h1 className="text-[#adc6ff] font-black text-3xl tracking-tighter uppercase mb-2">CareerAgent AI</h1>
-            <p className="text-[#b9c8de] font-medium tracking-wide text-sm uppercase">Executive Protocol v4.0</p>
+            <h1 className="text-primary font-black text-3xl tracking-tighter uppercase mb-2">CareerAgent AI</h1>
+            <p className="text-on-surface-variant font-medium tracking-wide text-sm uppercase">Executive Protocol v4.0</p>
           </header>
           <div className="space-y-6">
-            <h2 className="text-5xl font-extrabold text-[#B9B9B9] leading-tight">
-              Engineer your next <span className="text-[#adc6ff]">strategic</span> move.
+            <h2 className="text-5xl font-extrabold text-on-surface leading-tight">
+              Engineer your next <span className="text-primary">strategic</span> move.
             </h2>
-            <p className="text-lg text-[#b9c8de] max-w-md leading-relaxed">
+            <p className="text-lg text-on-surface-variant max-w-md leading-relaxed">
               Deploy your personal AI intelligence suite to manage your career trajectory and market strategy.
             </p>
           </div>
 
           {/* Features */}
           <div className="grid grid-cols-2 gap-4 mt-8">
-            <div className="bg-[#0f0f0f] p-6 rounded-xl border border-slate-800/30">
-              <span className="material-symbols-outlined text-[#adc6ff] text-2xl mb-3 block">psychology</span>
-              <h3 className="text-sm font-bold uppercase tracking-widest mb-1 text-[#B9B9B9]">Intelligence</h3>
-              <p className="text-xs text-[#b9c8de]">Real-time market positioning.</p>
+            <div className="bg-surface-container-low p-6 rounded-xl border border-outline/30">
+              <span className="material-symbols-outlined text-primary text-2xl mb-3 block">psychology</span>
+              <h3 className="text-sm font-bold uppercase tracking-widest mb-1 text-on-surface">Intelligence</h3>
+              <p className="text-xs text-on-surface-variant">Real-time market positioning.</p>
             </div>
-            <div className="bg-[#0f0f0f] p-6 rounded-xl border border-slate-800/30">
-              <span className="material-symbols-outlined text-[#adc6ff] text-2xl mb-3 block">lock</span>
-              <h3 className="text-sm font-bold uppercase tracking-widest mb-1 text-[#B9B9B9]">Vault</h3>
-              <p className="text-xs text-[#b9c8de]">Encrypted career assets.</p>
+            <div className="bg-surface-container-low p-6 rounded-xl border border-outline/30">
+              <span className="material-symbols-outlined text-primary text-2xl mb-3 block">lock</span>
+              <h3 className="text-sm font-bold uppercase tracking-widest mb-1 text-on-surface">Vault</h3>
+              <p className="text-xs text-on-surface-variant">Encrypted career assets.</p>
             </div>
           </div>
         </section>
 
         {/* Right Column: Form */}
         <section className="md:col-span-7 flex justify-center lg:justify-start">
-          <div className="bg-[#0a0a0a] w-full max-w-md p-10 rounded-2xl border border-slate-800/30 backdrop-blur shadow-2xl relative">
-            <div className="absolute left-0 top-12 w-[2px] h-12 bg-[#adc6ff] shadow-[0_0_15px_rgba(173,198,255,0.6)]"></div>
+          <div className="bg-surface w-full max-w-md p-10 rounded-2xl border border-outline/30 backdrop-blur shadow-2xl relative">
+            <div className="absolute left-0 top-12 w-[2px] h-12 bg-primary shadow-[0_0_15px_rgba(173,198,255,0.6)]"></div>
 
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-[#B9B9B9] mb-2">Create Account</h2>
-              <p className="text-[#b9c8de] text-sm">Join the elite network of intelligent careers.</p>
+              <h2 className="text-2xl font-bold text-on-surface mb-2">Create Account</h2>
+              <p className="text-on-surface-variant text-sm">Join the elite network of intelligent careers.</p>
             </div>
 
             <form onSubmit={handleSignup} className="space-y-5">
@@ -127,7 +127,7 @@ export default function Signup() {
                 type="button"
                 onClick={handleGoogleSignup}
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-3 bg-[#0f0f0f] hover:bg-[#1a1a1a] disabled:opacity-50 transition-all py-3.5 rounded-lg font-semibold text-[#B9B9B9] border border-slate-800/30"
+                className="w-full flex items-center justify-center gap-3 bg-surface-container-low hover:bg-surface-container disabled:opacity-50 transition-all py-3.5 rounded-lg font-semibold text-on-surface border border-outline/30"
               >
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
                   <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="currentColor"></path>
@@ -139,23 +139,23 @@ export default function Signup() {
               </button>
 
               <div className="relative flex items-center py-4">
-                <div className="flex-grow border-t border-slate-800/20"></div>
-                <span className="flex-shrink mx-4 text-xs font-bold uppercase tracking-widest text-[#b9c8de]">Or</span>
-                <div className="flex-grow border-t border-slate-800/20"></div>
+                <div className="flex-grow border-t border-outline/20"></div>
+                <span className="flex-shrink mx-4 text-xs font-bold uppercase tracking-widest text-on-surface-variant">Or</span>
+                <div className="flex-grow border-t border-outline/20"></div>
               </div>
 
               {/* Full Name */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[#adc6ff] ml-1">Full Name</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-primary ml-1">Full Name</label>
                 <div className="relative">
-                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#b9c8de] text-lg">person</span>
+                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">person</span>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Johnathan Executive"
-                    className="w-full bg-[#0f0f0f] border border-slate-700/50 focus:border-[#adc6ff] rounded-lg py-3.5 pl-12 pr-4 text-[#B9B9B9] placeholder-slate-500 transition-all focus:outline-none"
+                    className="w-full bg-surface-container-low border border-outline/50 focus:border-primary rounded-lg py-3.5 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/70 transition-all focus:outline-none"
                     required
                   />
                 </div>
@@ -163,16 +163,16 @@ export default function Signup() {
 
               {/* Email */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[#adc6ff] ml-1">Email</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-primary ml-1">Email</label>
                 <div className="relative">
-                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#b9c8de] text-lg">mail</span>
+                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">mail</span>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="name@corporation.com"
-                    className="w-full bg-[#0f0f0f] border border-slate-700/50 focus:border-[#adc6ff] rounded-lg py-3.5 pl-12 pr-4 text-[#B9B9B9] placeholder-slate-500 transition-all focus:outline-none"
+                    className="w-full bg-surface-container-low border border-outline/50 focus:border-primary rounded-lg py-3.5 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/70 transition-all focus:outline-none"
                     required
                   />
                 </div>
@@ -180,16 +180,16 @@ export default function Signup() {
 
               {/* Password */}
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold uppercase tracking-widest text-[#adc6ff] ml-1">Password</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest text-primary ml-1">Password</label>
                 <div className="relative">
-                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-[#b9c8de] text-lg">lock</span>
+                  <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">lock</span>
                   <input
                     type="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="••••••••"
-                    className="w-full bg-[#0f0f0f] border border-slate-700/50 focus:border-[#adc6ff] rounded-lg py-3.5 pl-12 pr-4 text-[#B9B9B9] placeholder-slate-500 transition-all focus:outline-none"
+                    placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+                    className="w-full bg-surface-container-low border border-outline/50 focus:border-primary rounded-lg py-3.5 pl-12 pr-4 text-on-surface placeholder:text-on-surface-variant/70 transition-all focus:outline-none"
                     required
                   />
                 </div>
@@ -197,8 +197,8 @@ export default function Signup() {
 
               {/* Terms */}
               <div className="flex items-start gap-3 px-1">
-                <input type="checkbox" className="mt-1 rounded bg-[#0f0f0f] border-slate-700/50 text-[#adc6ff]" required />
-                <p className="text-xs text-[#b9c8de] leading-relaxed">
+                <input type="checkbox" className="mt-1 rounded bg-surface-container-low border-outline/50 text-primary" required />
+                <p className="text-xs text-on-surface-variant leading-relaxed">
                   I authorize CareerAgent AI to analyze my career data under the Security Protocol.
                 </p>
               </div>
@@ -207,7 +207,7 @@ export default function Signup() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-r from-[#4d8eff] to-[#adc6ff] text-white font-bold py-4 rounded-lg shadow-lg hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-primary-container to-primary text-white font-bold py-4 rounded-lg shadow-lg hover:scale-105 active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {loading ? 'Creating Account...' : 'Initialize Deployment'}
                 {!loading && <span className="material-symbols-outlined text-lg">arrow_forward</span>}
@@ -215,9 +215,9 @@ export default function Signup() {
             </form>
 
             <footer className="mt-8 text-center">
-              <p className="text-sm text-[#b9c8de]">
+              <p className="text-sm text-on-surface-variant">
                 Already have an account?{' '}
-                <Link href="/login" className="text-[#adc6ff] font-bold hover:underline transition-all">
+                <Link href="/login" className="text-primary font-bold hover:underline transition-all">
                   Sign in
                 </Link>
               </p>
@@ -228,3 +228,5 @@ export default function Signup() {
     </main>
   );
 }
+
+

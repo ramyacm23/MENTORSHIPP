@@ -4,15 +4,18 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/app/context/AuthContext';
+import ThemeToggleButton from '@/app/components/ThemeToggleButton';
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, loading, logout } = useAuth();
   const [userName, setUserName] = useState('');
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // Check if current page requires authentication
   const isAuthPage = pathname === '/login' || pathname === '/signup';
+  const shouldShowShell = user && !isAuthPage;
 
   useEffect(() => {
     // Redirect to login if not authenticated and not on auth pages
@@ -26,10 +29,14 @@ export default function ClientLayout({ children }) {
     setUserName(name);
   }, [user]);
 
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [pathname]);
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#000000]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#adc6ff]"></div>
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -49,38 +56,99 @@ export default function ClientLayout({ children }) {
 
   return (
     <>
+      {!shouldShowShell && (
+        <div className="fixed right-4 top-4 z-40 sm:right-6 sm:top-6">
+          <ThemeToggleButton compact />
+        </div>
+      )}
+
       {/* Show navigation only if user is authenticated and not on auth pages */}
-      {user && !isAuthPage && (
+      {shouldShowShell && (
         <>
           {/* TopAppBar */}
-          <header className="fixed top-0 left-0 right-0 z-50 bg-[#000000]/60 backdrop-blur-xl flex justify-between items-center px-8 h-16">
-            <div className="flex items-center gap-4">
-              <span className="text-xl font-bold tracking-tighter text-blue-100 font-headline">The Cognitive Architecture</span>
-            </div>
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-4 text-slate-400">
-                <span className="material-symbols-outlined hover:text-blue-200 transition-colors cursor-pointer active:scale-95">bolt</span>
-                <span className="material-symbols-outlined hover:text-blue-200 transition-colors cursor-pointer active:scale-95">notifications</span>
-                <span className="material-symbols-outlined hover:text-blue-200 transition-colors cursor-pointer active:scale-95">account_circle</span>
+          <header className="fixed left-0 right-0 top-0 z-50 border-b border-outline/15 bg-background/80 backdrop-blur-xl">
+            <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:pl-72 lg:pr-8">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => setMobileNavOpen(true)}
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-outline/20 bg-surface-container-low text-on-surface lg:hidden"
+                  aria-label="Open navigation"
+                >
+                  <span className="material-symbols-outlined">menu</span>
+                </button>
+                <div>
+                  <p className="font-headline text-base font-extrabold tracking-tight text-on-surface sm:text-lg">
+                    The Cognitive Architecture
+                  </p>
+                  <p className="hidden text-xs text-on-surface-variant sm:block">
+                    Smart Profile Analyzer
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="hidden text-right md:block">
+                  <p className="text-sm font-semibold text-on-surface">Welcome back</p>
+                  <p className="text-xs text-on-surface-variant">{userName}</p>
+                </div>
+                <ThemeToggleButton />
+                <div className="flex items-center gap-2 text-on-surface-variant">
+                  {['bolt', 'notifications', 'account_circle'].map((icon) => (
+                    <button
+                      key={icon}
+                      type="button"
+                      className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-outline/20 bg-surface-container-low transition-all hover:border-primary/30 hover:bg-primary/10 hover:text-primary active:scale-95"
+                      aria-label={icon}
+                    >
+                      <span className="material-symbols-outlined">{icon}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </header>
 
+          <button
+            type="button"
+            aria-label="Close navigation overlay"
+            onClick={() => setMobileNavOpen(false)}
+            className={`fixed inset-0 z-30 bg-[rgb(var(--overlay)/0.42)] backdrop-blur-sm transition-opacity lg:hidden ${
+              mobileNavOpen ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'
+            }`}
+          />
+
           {/* SideNavBar */}
-          <aside className="fixed left-0 top-0 h-full w-64 z-40 bg-[#000000] border-r border-slate-800/20 flex flex-col py-8 px-4 shadow-2xl shadow-black/40">
-            <div className="mt-16 mb-8 px-4">
+          <aside
+            className={`fixed left-0 top-0 z-40 flex h-full w-72 flex-col border-r border-outline/20 bg-background/95 px-4 py-8 shadow-2xl shadow-black/25 backdrop-blur-xl transition-transform duration-300 lg:w-64 lg:translate-x-0 ${
+              mobileNavOpen ? 'translate-x-0' : '-translate-x-full'
+            }`}
+          >
+            <div className="mb-8 mt-16 flex items-center justify-between px-4 lg:justify-start">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg overflow-hidden bg-[#222a3d] border border-slate-700/20">
-                  <div className="w-full h-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-bold">AI</div>
+                <div className="h-10 w-10 overflow-hidden rounded-lg border border-outline/20 bg-surface-container-high">
+                  <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-primary-container to-primary text-sm font-bold text-white">
+                    AI
+                  </div>
                 </div>
                 <div>
-                  <p className="text-sm font-bold font-headline text-[#B9B9B9]">Executive Coach</p>
+                  <p className="font-headline text-sm font-bold text-on-surface">Executive Coach</p>
                   <div className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#adc6ff] ai-pulse"></span>
-                    <p className="text-[10px] text-slate-500 font-medium tracking-wider uppercase">AI Pulse: Active</p>
+                    <span className="ai-pulse h-1.5 w-1.5 rounded-full bg-primary"></span>
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-on-surface-variant">
+                      AI Pulse: Active
+                    </p>
                   </div>
                 </div>
               </div>
+              <button
+                type="button"
+                onClick={() => setMobileNavOpen(false)}
+                className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-outline/20 bg-surface-container-low text-on-surface lg:hidden"
+                aria-label="Close navigation"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
             </div>
 
             <nav className="flex-1 space-y-1">
@@ -88,13 +156,16 @@ export default function ClientLayout({ children }) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-3 transition-all duration-300 ease-in-out font-inter text-sm font-medium rounded-lg ${
+                  className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all duration-300 ease-in-out ${
                     item.active
-                      ? 'text-blue-400 border-r-2 border-blue-400 bg-blue-500/5'
-                      : 'text-slate-500 hover:bg-slate-800/40 hover:text-slate-200'
+                      ? 'border border-primary/20 bg-primary/10 text-primary'
+                      : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
                   }`}
                 >
-                  <span className="material-symbols-outlined" style={{ fontVariationSettings: item.active ? "'FILL' 1" : "'FILL' 0" }}>
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontVariationSettings: item.active ? "'FILL' 1" : "'FILL' 0" }}
+                  >
                     {item.icon}
                   </span>
                   {item.label}
@@ -102,14 +173,17 @@ export default function ClientLayout({ children }) {
               ))}
             </nav>
 
-            <div className="mt-auto space-y-3 pt-6 border-t border-slate-800/20">
-              <Link href="/profile" className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-500 hover:bg-slate-800/40 hover:text-slate-200 transition-all text-sm font-medium">
+            <div className="mt-auto space-y-3 border-t border-outline/20 pt-6">
+              <Link
+                href="/profile"
+                className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-on-surface-variant transition-all hover:bg-surface-container-high hover:text-on-surface"
+              >
                 <span className="material-symbols-outlined">settings</span>
                 Settings
               </Link>
               <button
                 onClick={logout}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-xs font-bold font-headline transition-all"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-red-500/10 px-4 py-2.5 text-xs font-bold text-red-400 transition-all hover:bg-red-500/20"
               >
                 <span className="material-symbols-outlined text-sm">logout</span>
                 Logout
@@ -120,14 +194,16 @@ export default function ClientLayout({ children }) {
       )}
 
       {/* Main Content */}
-      <main className={`${user && !isAuthPage ? 'ml-64 pt-24' : ''} px-10 pb-12 min-h-screen`}>
+      <main
+        className={`${shouldShowShell ? 'pt-24 lg:ml-64' : ''} min-h-screen px-4 pb-12 sm:px-6 lg:px-10`}
+      >
         {children}
       </main>
 
       {/* Background Decoration */}
       <div className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none overflow-hidden">
-        <div className="absolute -top-[20%] -left-[10%] w-[60%] h-[60%] bg-blue-500/5 rounded-full blur-[120px]"></div>
-        <div className="absolute top-[40%] -right-[10%] w-[50%] h-[50%] bg-green-500/5 rounded-full blur-[120px]"></div>
+        <div className="absolute -left-[10%] -top-[20%] h-[60%] w-[60%] rounded-full bg-primary/10 blur-[120px]"></div>
+        <div className="absolute -right-[10%] top-[40%] h-[50%] w-[50%] rounded-full bg-secondary/10 blur-[120px]"></div>
       </div>
     </>
   );

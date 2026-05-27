@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { safeApiFetch, API_URLS } from '@/lib/api';
@@ -85,9 +85,9 @@ export default function ResumeLab() {
         keywordMatches: ['Python', 'React', 'SQL', 'System Design', 'AWS'],
         missingKeywords: ['Kubernetes', 'Docker', 'Microservices', 'GraphQL', 'DevOps'],
         strengths: [
-          '✓ Strong tech stack mentioned',
-          '✓ Multiple projects listed',
-          '✓ Clear career progression'
+          'Strong tech stack mentioned',
+          'Multiple projects listed',
+          'Clear career progression'
         ],
         improvements: [
           'Add quantifiable metrics (e.g., "reduced latency by 40%")',
@@ -135,47 +135,47 @@ export default function ResumeLab() {
   return (
     <>
       <header className="mb-8">
-        <h1 className="text-4xl font-extrabold font-headline tracking-tight text-[#B9B9B9] mb-2">Resume Intelligence Lab</h1>
-        <p className="text-[#b9c8de]">AI-powered resume optimization, ATS analysis, and keyword enhancement</p>
+        <h1 className="text-4xl font-extrabold font-headline tracking-tight text-on-surface mb-2">Resume Intelligence Lab</h1>
+        <p className="text-on-surface-variant">AI-powered resume optimization, ATS analysis, and keyword enhancement</p>
       </header>
 
       <div className="grid grid-cols-12 gap-8">
         {/* Upload Section */}
         <div className="col-span-12 lg:col-span-5">
-          <div className="bg-[#000000] rounded-xl p-8 border border-slate-800/20 space-y-6 sticky top-24">
-            <h2 className="text-xl font-bold text-[#B9B9B9]">Upload Resume</h2>
+          <div className="bg-surface rounded-xl p-8 border border-outline/20 space-y-6 sticky top-24">
+            <h2 className="text-xl font-bold text-on-surface">Upload Resume</h2>
 
             <div
               onClick={() => document.getElementById('fileInput')?.click()}
-              className="relative border-2 border-dashed border-[#adc6ff]/30 hover:border-[#adc6ff] rounded-lg p-8 text-center cursor-pointer transition-all hover:bg-[#adc6ff]/5"
+              className="relative border-2 border-dashed border-primary/30 hover:border-primary rounded-lg p-8 text-center cursor-pointer transition-all hover:bg-primary/5"
             >
               <input id="fileInput" type="file" accept=".pdf,.docx,.txt" onChange={handleFileUpload} className="hidden" />
-              <span className="material-symbols-outlined text-5xl text-[#adc6ff] mb-2 block opacity-70">cloud_upload</span>
-              <p className="text-[#B9B9B9] font-semibold mb-1">Drop your resume here</p>
-              <p className="text-xs text-[#b9c8de]">or click to browse (PDF, DOCX, TXT)</p>
+              <span className="material-symbols-outlined text-5xl text-primary mb-2 block opacity-70">cloud_upload</span>
+              <p className="text-on-surface font-semibold mb-1">Drop your resume here</p>
+              <p className="text-xs text-on-surface-variant">or click to browse (PDF, DOCX, TXT)</p>
             </div>
 
             {resumeFile && (
-              <div className="p-3 bg-[#4edea3]/10 border border-[#4edea3]/20 rounded-lg flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#4edea3]">check_circle</span>
-                <span className="text-sm text-[#B9B9B9] font-semibold">{resumeFile.name}</span>
+              <div className="p-3 bg-secondary/10 border border-secondary/20 rounded-lg flex items-center gap-2">
+                <span className="material-symbols-outlined text-secondary">check_circle</span>
+                <span className="text-sm text-on-surface font-semibold">{resumeFile.name}</span>
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-bold text-[#c2c6d6] uppercase tracking-widest mb-2">Or Paste Resume Text</label>
+              <label className="block text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-2">Or Paste Resume Text</label>
               <textarea
                 value={resumeText}
                 onChange={(e) => setResumeText(e.target.value)}
                 placeholder="Paste your resume content here..."
-                className="w-full h-32 p-3 bg-[#000000] border border-slate-700 rounded-lg text-[#B9B9B9] placeholder-slate-500 focus:outline-none focus:border-[#adc6ff]"
+                className="w-full h-32 p-3 bg-surface border border-outline rounded-lg text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary"
               />
             </div>
 
             <button
               onClick={handleEvaluate}
               disabled={!resumeText.trim() || loading}
-              className="w-full py-3 bg-[#4edea3] hover:brightness-110 disabled:opacity-50 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 bg-secondary hover:brightness-110 disabled:opacity-50 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2"
             >
               <span className={`material-symbols-outlined ${loading ? 'animate-spin' : ''}`}>{loading ? 'autorenew' : 'smart_toy'}</span>
               {loading ? 'Analyzing...' : 'Analyze Resume'}
@@ -187,26 +187,26 @@ export default function ResumeLab() {
         {result && (
           <div className="col-span-12 lg:col-span-7 space-y-6">
             {/* ATS Score */}
-            <div className="bg-[#000000] rounded-xl p-8 border border-slate-800/20">
-              <h3 className="text-lg font-bold text-[#B9B9B9] mb-6 flex items-center gap-2">
-                <span className="material-symbols-outlined text-[#adc6ff]">fact_check</span>
+            <div className="bg-surface rounded-xl p-8 border border-outline/20">
+              <h3 className="text-lg font-bold text-on-surface mb-6 flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary">fact_check</span>
                 ATS Compatibility Score
               </h3>
 
               <div className="mb-6">
                 <div className="flex items-end justify-between mb-3">
-                  <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[#4d8eff] to-[#4edea3]">{result.atsScore}%</span>
-                  <span className={`px-4 py-2 rounded-full text-sm font-bold ${result.atsScore > 80 ? 'bg-[#4edea3]/20 text-[#4edea3]' : result.atsScore > 60 ? 'bg-[#adc6ff]/20 text-[#adc6ff]' : 'bg-red-500/20 text-red-400'}`}>
+                  <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary-container to-secondary">{result.atsScore}%</span>
+                  <span className={`px-4 py-2 rounded-full text-sm font-bold ${result.atsScore > 80 ? 'bg-secondary/20 text-secondary' : result.atsScore > 60 ? 'bg-primary/20 text-primary' : 'bg-red-500/20 text-red-400'}`}>
                     {result.atsScore > 80 ? 'Excellent' : result.atsScore > 60 ? 'Good' : 'Needs Work'}
                   </span>
                 </div>
 
-                <div className="w-full bg-[#000000] rounded-full h-3 overflow-hidden border border-slate-700">
-                  <div style={{ width: `${result.atsScore}%` }} className="h-full bg-gradient-to-r from-[#4d8eff] to-[#4edea3] transition-all duration-500"></div>
+                <div className="w-full bg-surface-container-highest rounded-full h-3 overflow-hidden border border-outline">
+                  <div style={{ width: `${result.atsScore}%` }} className="h-full bg-gradient-to-r from-primary-container to-secondary transition-all duration-500"></div>
                 </div>
               </div>
 
-              <p className="text-sm text-[#b9c8de]">
+              <p className="text-sm text-on-surface-variant">
                 {result.atsScore > 80
                   ? 'Your resume is well-optimized for ATS systems. Great job!'
                   : result.atsScore > 60
@@ -216,8 +216,8 @@ export default function ResumeLab() {
             </div>
 
             {/* Tabs */}
-            <div className="bg-[#000000] rounded-xl border border-slate-800/20 overflow-hidden">
-              <div className="flex border-b border-slate-800/20">
+            <div className="bg-surface rounded-xl border border-outline/20 overflow-hidden">
+              <div className="flex border-b border-outline/20">
                 {[
                   { id: 'analysis', label: 'Keywords & Analysis' },
                   { id: 'improvements', label: 'Improvements' },
@@ -228,8 +228,8 @@ export default function ResumeLab() {
                     onClick={() => setActiveTab(tab.id)}
                     className={`flex-1 px-6 py-4 text-sm font-bold uppercase tracking-widest transition-all ${
                       activeTab === tab.id
-                        ? 'text-[#adc6ff] border-b-2 border-[#adc6ff]'
-                        : 'text-[#b9c8de] hover:text-[#B9B9B9]'
+                        ? 'text-primary border-b-2 border-primary'
+                        : 'text-on-surface-variant hover:text-on-surface'
                     }`}
                   >
                     {tab.label}
@@ -242,10 +242,10 @@ export default function ResumeLab() {
                 {activeTab === 'analysis' && (
                   <div className="space-y-6">
                     <div>
-                      <p className="text-sm font-bold text-[#c2c6d6] uppercase tracking-widest mb-3">✓ Found Keywords</p>
+                      <p className="text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3">Found Keywords</p>
                       <div className="flex flex-wrap gap-2">
                         {result.keywordMatches?.map((kw, idx) => (
-                          <span key={idx} className="px-3 py-1.5 bg-[#4edea3]/20 text-[#4edea3] rounded-full text-xs font-bold">
+                          <span key={idx} className="px-3 py-1.5 bg-secondary/20 text-secondary rounded-full text-xs font-bold">
                             {kw}
                           </span>
                         ))}
@@ -253,7 +253,7 @@ export default function ResumeLab() {
                     </div>
 
                     <div>
-                      <p className="text-sm font-bold text-[#c2c6d6] uppercase tracking-widest mb-3">⚠ Missing Keywords</p>
+                      <p className="text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-3">Missing Keywords</p>
                       <div className="flex flex-wrap gap-2">
                         {result.missingKeywords?.map((kw, idx) => (
                           <span key={idx} className="px-3 py-1.5 bg-red-500/20 text-red-400 rounded-full text-xs font-bold">
@@ -270,21 +270,21 @@ export default function ResumeLab() {
                   <div className="space-y-3">
                     {result.strengths && (
                       <div>
-                        <p className="text-sm font-bold text-[#4edea3] uppercase tracking-widest mb-2">Strengths</p>
+                        <p className="text-sm font-bold text-secondary uppercase tracking-widest mb-2">Strengths</p>
                         {result.strengths.map((s, idx) => (
-                          <p key={idx} className="text-sm text-[#B9B9B9] mb-1">
+                          <p key={idx} className="text-sm text-on-surface mb-1">
                             {s}
                           </p>
                         ))}
                       </div>
                     )}
 
-                    <div className="border-t border-slate-700 pt-4">
-                      <p className="text-sm font-bold text-[#adc6ff] uppercase tracking-widest mb-2">Action Items</p>
+                    <div className="border-t border-outline pt-4">
+                      <p className="text-sm font-bold text-primary uppercase tracking-widest mb-2">Action Items</p>
                       {result.improvements?.map((imp, idx) => (
                         <div key={idx} className="flex gap-2 mb-2">
-                          <span className="text-[#adc6ff]">→</span>
-                          <p className="text-sm text-[#B9B9B9]">{imp}</p>
+                          <span className="text-primary">-&gt;</span>
+                          <p className="text-sm text-on-surface">{imp}</p>
                         </div>
                       ))}
                     </div>
@@ -295,12 +295,12 @@ export default function ResumeLab() {
                 {activeTab === 'bullets' && (
                   <div className="space-y-4">
                     {result.bulletImprovements?.map((bullet, idx) => (
-                      <div key={idx} className="p-4 bg-[#000000] rounded-lg border border-slate-700">
+                      <div key={idx} className="p-4 bg-surface rounded-lg border border-outline">
                         <p className="text-xs font-bold text-red-400 uppercase tracking-widest mb-2">Before</p>
-                        <p className="text-sm text-[#B9B9B9] mb-3 italic">{bullet.original}</p>
+                        <p className="text-sm text-on-surface mb-3 italic">{bullet.original}</p>
 
-                        <p className="text-xs font-bold text-[#4edea3] uppercase tracking-widest mb-2">After</p>
-                        <p className="text-sm text-[#B9B9B9] font-semibold">{bullet.improved}</p>
+                        <p className="text-xs font-bold text-secondary uppercase tracking-widest mb-2">After</p>
+                        <p className="text-sm text-on-surface font-semibold">{bullet.improved}</p>
                       </div>
                     ))}
                   </div>
@@ -311,7 +311,7 @@ export default function ResumeLab() {
             {/* Download Button */}
             <button
               onClick={downloadEnhancedResume}
-              className="w-full py-3 bg-gradient-to-r from-[#4d8eff] to-[#4edea3] hover:opacity-90 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2"
+              className="w-full py-3 bg-gradient-to-r from-primary-container to-secondary hover:opacity-90 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2"
             >
               <span className="material-symbols-outlined">download</span>
               Download Enhanced Resume
@@ -322,9 +322,9 @@ export default function ResumeLab() {
         {/* Empty State */}
         {!result && !loading && (
           <div className="col-span-12 lg:col-span-7">
-            <div className="bg-[#000000] rounded-xl p-12 border border-slate-800/20 text-center">
-              <span className="material-symbols-outlined text-6xl text-[#adc6ff] opacity-50 block mb-4">description</span>
-              <p className="text-[#b9c8de] text-lg">Upload or paste your resume to get AI-powered analysis and recommendations</p>
+            <div className="bg-surface rounded-xl p-12 border border-outline/20 text-center">
+              <span className="material-symbols-outlined text-6xl text-primary opacity-50 block mb-4">description</span>
+              <p className="text-on-surface-variant text-lg">Upload or paste your resume to get AI-powered analysis and recommendations</p>
             </div>
           </div>
         )}
@@ -332,3 +332,5 @@ export default function ResumeLab() {
     </>
   );
 }
+
+

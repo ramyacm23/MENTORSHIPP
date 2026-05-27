@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { safeApiFetch, API_URLS } from '@/lib/api';
@@ -37,7 +37,7 @@ export default function MentorChat() {
       projects:
         "Building projects is excellent for learning. Try creating a full-stack app - it covers frontend, backend, and database. This looks amazing on resumes and in interviews.",
       motivation:
-        "I see you've improved from 32% → 48% in placement probability. You're making great progress! Keep pushing - you're on the right track. The key is consistency.",
+        "I see you've improved from 32% â†’ 48% in placement probability. You're making great progress! Keep pushing - you're on the right track. The key is consistency.",
       default:
         'That\'s a great point! Focus on implementing it step-by-step. Would you like me to break this down into smaller milestones? I can help create a personalized plan for you.',
     };
@@ -87,7 +87,7 @@ export default function MentorChat() {
         
         // Add action if available and is a string
         if (data.action && typeof data.action === 'string' && data.action.trim()) {
-          mentorText += `\n\n💡 ${data.action}`;
+          mentorText += `\n\nðŸ’¡ ${data.action}`;
         }
         
         // Add motivation if available
@@ -131,23 +131,23 @@ export default function MentorChat() {
   };
 
   const quickActions = [
-    { label: 'DSA Help', emoji: '📊' },
-    { label: 'Interview Tips', emoji: '🎯' },
-    { label: 'Project Ideas', emoji: '🚀' },
-    { label: 'Motivation', emoji: '💪' },
+    { label: 'DSA Help', emoji: 'ðŸ“Š' },
+    { label: 'Interview Tips', emoji: 'ðŸŽ¯' },
+    { label: 'Project Ideas', emoji: 'ðŸš€' },
+    { label: 'Motivation', emoji: 'ðŸ’ª' },
   ];
 
   return (
     <>
       <header className="mb-8">
-        <h1 className="text-4xl font-extrabold font-headline tracking-tight text-[#B9B9B9] mb-2">AI Mentor Chat</h1>
-        <p className="text-[#b9c8de]">Context-aware mentoring with memory and personalized guidance</p>
+        <h1 className="text-4xl font-extrabold font-headline tracking-tight text-on-surface mb-2">AI Mentor Chat</h1>
+        <p className="text-on-surface-variant">Context-aware mentoring with memory and personalized guidance</p>
       </header>
 
       <div className="grid grid-cols-12 gap-8">
         {/* Chat Section */}
         <div className="col-span-12 lg:col-span-8">
-          <div className="bg-[#000000] rounded-xl border border-slate-800/20 overflow-hidden flex flex-col h-96 lg:h-[600px]">
+          <div className="bg-surface rounded-xl border border-outline/20 overflow-hidden flex flex-col h-96 lg:h-[600px]">
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               {messages.map((msg) => (
@@ -155,8 +155,8 @@ export default function MentorChat() {
                   <div
                     className={`max-w-xs lg:max-w-md px-4 py-3 rounded-lg ${
                       msg.type === 'user'
-                        ? 'bg-[#4edea3] text-white rounded-br-none'
-                        : 'bg-[#000000] text-[#B9B9B9] rounded-bl-none border border-slate-700'
+                        ? 'bg-secondary text-white rounded-br-none'
+                        : 'bg-surface text-on-surface rounded-bl-none border border-outline'
                     }`}
                   >
                     <p className="text-sm">{msg.text}</p>
@@ -166,11 +166,11 @@ export default function MentorChat() {
 
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-[#000000] text-[#B9B9B9] px-4 py-3 rounded-lg rounded-bl-none border border-slate-700">
+                  <div className="bg-surface text-on-surface px-4 py-3 rounded-lg rounded-bl-none border border-outline">
                     <div className="flex gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#adc6ff] animate-bounce"></span>
-                      <span className="w-2 h-2 rounded-full bg-[#adc6ff] animate-bounce" style={{ animationDelay: '0.2s' }}></span>
-                      <span className="w-2 h-2 rounded-full bg-[#adc6ff] animate-bounce" style={{ animationDelay: '0.4s' }}></span>
+                      <span className="w-2 h-2 rounded-full bg-primary animate-bounce"></span>
+                      <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                      <span className="w-2 h-2 rounded-full bg-primary animate-bounce" style={{ animationDelay: '0.4s' }}></span>
                     </div>
                   </div>
                 </div>
@@ -180,7 +180,7 @@ export default function MentorChat() {
             </div>
 
             {/* Input Area */}
-            <div className="border-t border-slate-800/20 p-4 bg-[#000000]">
+            <div className="border-t border-outline/20 p-4 bg-surface">
               <div className="flex gap-2">
                 <input
                   value={input}
@@ -192,12 +192,12 @@ export default function MentorChat() {
                     }
                   }}
                   placeholder="Ask your mentor anything..."
-                  className="flex-1 p-3 bg-[#000000] border border-slate-700 rounded-lg text-[#B9B9B9] placeholder-slate-500 focus:outline-none focus:border-[#adc6ff]"
+                  className="flex-1 p-3 bg-surface border border-outline rounded-lg text-on-surface placeholder:text-on-surface-variant/70 focus:outline-none focus:border-primary"
                 />
                 <button
                   onClick={handleSendMessage}
                   disabled={loading || !input.trim()}
-                  className="px-4 py-3 bg-[#4edea3] hover:brightness-110 disabled:opacity-50 text-white font-bold rounded-lg transition-all"
+                  className="px-4 py-3 bg-secondary hover:brightness-110 disabled:opacity-50 text-white font-bold rounded-lg transition-all"
                 >
                   <span className="material-symbols-outlined">send</span>
                 </button>
@@ -209,8 +209,8 @@ export default function MentorChat() {
         {/* Sidebar */}
         <div className="col-span-12 lg:col-span-4 space-y-6">
           {/* Quick Actions */}
-          <div className="bg-[#000000] rounded-xl p-6 border border-slate-800/20">
-            <h3 className="text-lg font-bold text-[#B9B9B9] mb-4 flex items-center gap-2">
+          <div className="bg-surface rounded-xl p-6 border border-outline/20">
+            <h3 className="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
               <span className="material-symbols-outlined">touch_app</span>
               Quick Actions
             </h3>
@@ -220,7 +220,7 @@ export default function MentorChat() {
                 <button
                   key={idx}
                   onClick={() => handleQuickAction(action)}
-                  className="w-full px-4 py-3 bg-[#000000] hover:bg-[#1a2539] border border-slate-700 rounded-lg text-[#B9B9B9] transition-all text-left flex items-center gap-3"
+                  className="w-full px-4 py-3 bg-surface hover:bg-surface-container-high border border-outline rounded-lg text-on-surface transition-all text-left flex items-center gap-3"
                 >
                   <span className="text-xl">{action.emoji}</span>
                   <span className="text-sm font-semibold">{action.label}</span>
@@ -230,34 +230,34 @@ export default function MentorChat() {
           </div>
 
           {/* Context */}
-          <div className="bg-[#000000] rounded-xl p-6 border border-slate-800/20">
-            <h3 className="text-lg font-bold text-[#B9B9B9] mb-4 flex items-center gap-2">
-              <span className="material-symbols-outlined text-[#adc6ff]">memory</span>
+          <div className="bg-surface rounded-xl p-6 border border-outline/20">
+            <h3 className="text-lg font-bold text-on-surface mb-4 flex items-center gap-2">
+              <span className="material-symbols-outlined text-primary">memory</span>
               Your Context
             </h3>
 
-            <div className="space-y-3 text-sm text-[#c2c6d6]">
+            <div className="space-y-3 text-sm text-on-surface-variant">
               <div>
-                <p className="font-semibold text-[#B9B9B9] mb-1">Last Session</p>
+                <p className="font-semibold text-on-surface mb-1">Last Session</p>
                 <p>Worked on System Design</p>
               </div>
 
               <div>
-                <p className="font-semibold text-[#B9B9B9] mb-1">Weak Topics</p>
+                <p className="font-semibold text-on-surface mb-1">Weak Topics</p>
                 <p>Dynamic Programming, Heaps</p>
               </div>
 
               <div>
-                <p className="font-semibold text-[#B9B9B9] mb-1">Achievements</p>
-                <p>5-day streak ⭐</p>
+                <p className="font-semibold text-on-surface mb-1">Achievements</p>
+                <p>5-day streak â­</p>
               </div>
             </div>
           </div>
 
           {/* Motivation */}
-          <div className="bg-gradient-to-br from-[#adc6ff]/10 to-[#4edea3]/10 rounded-xl p-6 border border-[#adc6ff]/20">
-            <p className="text-sm text-[#B9B9B9]">
-              <span className="font-bold">💡 Did you know?</span> Students who practice with structured mentoring improve their placement chances by 3x. Keep grinding!
+          <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl p-6 border border-primary/20">
+            <p className="text-sm text-on-surface">
+              <span className="font-bold">ðŸ’¡ Did you know?</span> Students who practice with structured mentoring improve their placement chances by 3x. Keep grinding!
             </p>
           </div>
         </div>
@@ -265,3 +265,5 @@ export default function MentorChat() {
     </>
   );
 }
+
+

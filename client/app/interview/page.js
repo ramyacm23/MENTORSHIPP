@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef, useEffect } from 'react';
 import { safeApiFetch, API_URLS } from '@/lib/api';
@@ -292,9 +292,9 @@ Provide detailed evaluation as JSON:
       structure: /example|specifically/i.test(answer) ? 85 : 60,
       relevance: (Math.random() * 30 + 60).toFixed(0),
       suggestions: [
-        wordCount > 20 ? '✓ Good detail' : '⚠️ More details needed',
-        /example|specifically/i.test(answer) ? '✓ Good examples' : '⚠️ Add examples',
-        answer.length > 100 ? '✓ Adequate length' : '⚠️ Could elaborate',
+        wordCount > 20 ? 'Good detail' : 'More details needed',
+        /example|specifically/i.test(answer) ? 'Good examples' : 'Add examples',
+        answer.length > 100 ? 'Adequate length' : 'Could elaborate',
       ],
     };
   };
@@ -377,7 +377,7 @@ Provide detailed evaluation as JSON:
     <div>
       <header className="mb-10">
         <h1 className="text-4xl font-extrabold font-headline tracking-tight text-on-surface mb-2">Interview Studio</h1>
-        <p className="text-tertiary body-md">Groq-powered interviews: Setup → 15 Questions → Detailed Evaluation</p>
+        <p className="text-tertiary body-md">Groq-powered interviews: Setup -&gt; 15 Questions -&gt; Detailed Evaluation</p>
       </header>
 
       {/* MODE SELECTION */}
@@ -545,7 +545,7 @@ Provide detailed evaluation as JSON:
                     </span>
                   </button>
                   <p className="text-sm text-on-surface">
-                    {isRecording ? '🎤 Recording...' : 'Click to start recording'}
+                    {isRecording ? 'Recording...' : 'Click to start recording'}
                   </p>
                 </div>
 
@@ -622,7 +622,7 @@ Provide detailed evaluation as JSON:
                 {feedback.suggestions.map((s, i) => (
                   <li key={i} className="text-sm text-on-surface flex items-center gap-2">
                     <span className="material-symbols-outlined text-base">
-                      {s.includes('✓') ? 'check_circle' : 'info'}
+                      {s.startsWith('Good') || s.startsWith('Adequate') ? 'check_circle' : 'info'}
                     </span>
                     {s}
                   </li>
@@ -742,3 +742,5 @@ Provide detailed evaluation as JSON:
     </div>
   );
 }
+
+
