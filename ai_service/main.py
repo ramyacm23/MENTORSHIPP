@@ -5,6 +5,8 @@ from typing import Optional, List
 from agents.evaluator import evaluate_resume
 from agents.planner import generate_roadmap
 from agents.mentor import generate_nudge
+import io
+from fastapi.responses import StreamingResponse
 
 app = FastAPI(title="CareerAgent AI Brain")
 
@@ -56,6 +58,28 @@ class ProgressPayload(BaseModel):
     days_active: int
     total_days: int
 
+class ResourceItem(BaseModel):
+    text: str
+    href: Optional[str] = None
+
+class DepItem(BaseModel):
+    label: Optional[str] = None
+    chip: Optional[str] = None
+
+class PhaseItem(BaseModel):
+    name: str
+    colorClass: str
+    duration: str
+    level: str
+    topics: List[str]
+    resources: List[ResourceItem]
+    outcomes: List[str]
+    deps: List[DepItem]
+
+class RoadmapPdfPayload(BaseModel):
+    phases: List[PhaseItem]
+    total_time: Optional[str] = "varies"
+
 @app.get("/")
 def read_root():
     return {"status": "AI Service Running", "model": "llama-3.1-8b-instant"}
@@ -88,8 +112,12 @@ async def analyze_profile(payload: ProfilePayload):
         placement_probability = min(base_score + cgpa_score + skills_score + project_score + exp_bonus, 99)
         
         # Generate skill gaps
-        all_skills = ["Python", "Java", "DSA", "System Design", "SQL", "APIs", "React", "Docker", "AWS"]
-        skill_gaps = [s for s in all_skills if s not in payload.skills]
+        all_skills = ["Python", "Java", "DSA", "SQL", "APIs", "React", "Docker", "AWS","System Design"]
+        user_skills = [skill.lower() for skill in payload.skills]
+        skill_gaps = [
+            s for s in all_skills
+            if s.lower() not in user_skills
+        ]
         
         return {
             "status": "success",
@@ -101,6 +129,55 @@ async def analyze_profile(payload: ProfilePayload):
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}
+    
+@app.post("/download/roadmap/pdf")
+async def download_roadmap_pdf(payload: RoadmapPdfPayload):
+    try:
+        from jinja2 import Environment, FileSystemLoader
+        from playwright.sync_api import sync_playwright
+        import asyncio
+
+        env = Environment(loader=FileSystemLoader("templates/"))
+        template = env.get_template("roadmap.html")
+
+        rendered_html = template.render(
+            phases=[p.model_dump() for p in payload.phases],
+            total_time=payload.total_time,
+            skill_order=" → ".join(p.name for p in payload.phases),
+        )
+
+        print("HTML rendered, length:", len(rendered_html))
+
+        def generate_pdf():
+            with sync_playwright() as p:
+                browser = p.chromium.launch()
+                page = browser.new_page()
+                
+                page.set_viewport_size({"width": 1200, "height": 900})
+                page.set_content(rendered_html, wait_until="networkidle")
+                
+                page.wait_for_timeout(2000)
+                pdf = page.pdf(
+                    format="A4",
+                    print_background=True,
+                    margin={"top": "10mm", "bottom": "10mm", "left": "8mm", "right": "8mm"}
+                )
+                browser.close()
+                return pdf
+
+        loop = asyncio.get_event_loop()
+        pdf_bytes = await loop.run_in_executor(None, generate_pdf)
+
+        print("PDF generated, size:", len(pdf_bytes))
+
+        return StreamingResponse(
+            io.BytesIO(pdf_bytes),
+            media_type="application/pdf",
+            headers={"Content-Disposition": 'attachment; filename="roadmap.pdf"'}
+        )
+    except Exception as e:
+        print("ERROR:", e)
+        raise HTTPException(status_code=500, detail=str(e))
 
 # ==================== SKILL GAP ANALYZER ====================
 
