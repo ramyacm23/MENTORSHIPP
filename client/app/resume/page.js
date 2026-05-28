@@ -70,11 +70,29 @@ export default function ResumeLab() {
     if (!resumeText.trim()) return;
     setLoading(true);
     try {
-      const data = await safeApiFetch(`${API_URLS.PYTHON}/evaluate/resume`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ resume_text: resumeText }),
-      });
+      let data;
+
+      if (resumeFile && (resumeFile.type === 'application/pdf' || resumeFile.name.endsWith('.pdf'))) {
+        // Send actual PDF file to Node.js for proper pdf-parse extraction + Mega.nz backup
+        const formData = new FormData();
+        formData.append('resume', resumeFile);
+
+        const response = await fetch(`${API_URLS.NODE}/api/analyze/resume`, {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          data = await response.json();
+        }
+      } else {
+        // Text-only: send through Node.js as JSON
+        data = await safeApiFetch(`${API_URLS.NODE}/api/analyze/resume`, {
+          method: 'POST',
+          body: JSON.stringify({ resume_text: resumeText }),
+        });
+      }
+
       if (data) {
         setResult(data);
       }
