@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const authenticateUser = require('../middleware/authMiddleware');
 
 // Signup endpoint
 router.post('/signup', async (req, res) => {
@@ -122,6 +123,66 @@ router.get('/me', async (req, res) => {
     }
 });
 
+// GET authenticated user profile — fetches profile fields from MongoDB
+router.get('/profile', authenticateUser, async (req, res) => {
+    try {
+        const user = req.user;
+        res.json({
+            name: user.name,
+            email: user.email,
+            currentRole: user.currentRole || '',
+            targetRole: user.targetRole || '',
+            yearsExperience: user.yearsExperience || ''
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// PUT authenticated profile update — persists allowed fields to MongoDB
+const ALLOWED_PROFILE_FIELDS = ['name', 'currentRole', 'targetRole', 'yearsExperience'];
+
+router.put('/profile', authenticateUser, async (req, res) => {
+    try {
+        const updates = {};
+
+        // Whitelist: only pick allowed fields from the request body
+        for (const field of ALLOWED_PROFILE_FIELDS) {
+            if (req.body[field] !== undefined) {
+                const value = String(req.body[field]).trim();
+                if (value.length > 200) {
+                    return res.status(400).json({ message: `${field} must be under 200 characters` });
+                }
+                updates[field] = value;
+            }
+        }
+
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({ message: 'No valid fields provided for update' });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user._id,
+            { $set: updates },
+            { new: true, runValidators: true }
+        ).select('-password');
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json({
+            name: updatedUser.name,
+            email: updatedUser.email,
+            currentRole: updatedUser.currentRole || '',
+            targetRole: updatedUser.targetRole || '',
+            yearsExperience: updatedUser.yearsExperience || ''
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 router.get('/:id/profile', async (req, res) => {
     try {
         // Fallback mock if no specific ID or DB empty
@@ -160,3 +221,4 @@ router.get('/:id/profile', async (req, res) => {
 });
 
 module.exports = router;
+
