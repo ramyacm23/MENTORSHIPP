@@ -4,8 +4,11 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String },
+    firebaseUid: { type: String, unique: true, sparse: true },
+    currentRole: { type: String, default: '' },
     targetRole: { type: String, default: 'Software Engineer' },
+    yearsExperience: { type: String, default: '' },
     placementProbability: { type: Number, default: 45 },
     skills: { type: Map, of: Number, default: {} }, // e.g., {'System Design': 85}
     companyFitScores: { type: Map, of: Number, default: {} },
