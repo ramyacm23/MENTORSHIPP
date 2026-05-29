@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     firebaseUid: { type: String, unique: true, sparse: true },
     currentRole: { type: String, default: '' },
     targetRole: { type: String, default: 'Software Engineer' },
-    yearsExperience: { type: Number, default: null },
+    yearsExperience: { type: String, default: '' },
     placementProbability: { type: Number, default: 45 },
     skills: { type: Map, of: Number, default: {} }, // e.g., {'System Design': 85}
     companyFitScores: { type: Map, of: Number, default: {} },
