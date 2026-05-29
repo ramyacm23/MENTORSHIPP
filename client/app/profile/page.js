@@ -7,7 +7,7 @@ import { useTheme } from '@/app/context/ThemeContext';
 import { auth } from '@/lib/firebase';
 import { API_URLS, safeApiFetch } from '@/lib/api';
 
-const EMPTY_PROFILE = {
+const EMPTY_PROFILE = { 
   name: '',
   email: '',
   currentRole: '',
