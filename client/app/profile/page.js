@@ -1,108 +1,246 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut } from 'firebase/auth';
 import { useTheme } from '@/app/context/ThemeContext';
 import { auth } from '@/lib/firebase';
+import { API_URLS, safeApiFetch } from '@/lib/api';
+
+const EMPTY_PROFILE = {
+  name: '',
+  email: '',
+  currentRole: '',
+  targetRole: '',
+  yearsExperience: ''
+};
+
+const normalizeField = (value) => {
+  if (value === null || value === undefined) {
+    return '';
+  }
+
+  return String(value);
+};
+
+const getCachedProfile = () => ({
+  name: localStorage.getItem('userName') || 'User',
+  email: localStorage.getItem('userEmail') || '',
+  currentRole: localStorage.getItem('currentRole') || '',
+  targetRole: localStorage.getItem('targetRole') || '',
+  yearsExperience: localStorage.getItem('yearsExperience') || ''
+});
+
+const cacheProfile = (profile) => {
+  localStorage.setItem('userName', profile.name || 'User');
+  localStorage.setItem('userEmail', profile.email || '');
+  localStorage.setItem('currentRole', profile.currentRole || '');
+  localStorage.setItem('targetRole', profile.targetRole || '');
+  localStorage.setItem('yearsExperience', profile.yearsExperience || '');
+};
 
 export default function Profile() {
-  const [profile, setProfile] = useState({ name: '', email: '', currentRole: '', targetRole: '', yearsExperience: '' });
+  const [profile, setProfile] = useState(EMPTY_PROFILE);
   const [editing, setEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
   const router = useRouter();
   const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
-    const name = localStorage.getItem('userName') || 'User';
-    const email = localStorage.getItem('userEmail') || '';
-    const currentRole = localStorage.getItem('currentRole') || 'Mid-Level Engineer';
-    const targetRole = localStorage.getItem('targetRole') || 'Senior Architect';
-    const yearsExperience = localStorage.getItem('yearsExperience') || '8';
-    setProfile({ name, email, currentRole, targetRole, yearsExperience });
+    const fetchProfile = async () => {
+      setLoading(true);
+      const cachedProfile = getCachedProfile();
+      const token = localStorage.getItem('userToken');
+
+      if (token) {
+        const data = await safeApiFetch(`${API_URLS.NODE}/api/user/profile`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+
+        if (data && data.name) {
+          const nextProfile = {
+            name: normalizeField(data.name) || cachedProfile.name,
+            email: normalizeField(data.email) || cachedProfile.email,
+            currentRole: normalizeField(data.currentRole) || cachedProfile.currentRole,
+            targetRole: normalizeField(data.targetRole) || cachedProfile.targetRole,
+            yearsExperience: normalizeField(data.yearsExperience) || cachedProfile.yearsExperience
+          };
+
+          setProfile(nextProfile);
+          cacheProfile(nextProfile);
+          setLoading(false);
+          return;
+        }
+      }
+
+      setProfile(cachedProfile);
+      setLoading(false);
+    };
+
+    fetchProfile();
   }, []);
 
   const handleChange = (e) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    localStorage.setItem('userName', profile.name);
-    localStorage.setItem('userEmail', profile.email);
-    localStorage.setItem('currentRole', profile.currentRole);
-    localStorage.setItem('targetRole', profile.targetRole);
-    localStorage.setItem('yearsExperience', profile.yearsExperience);
+  const handleSave = async () => {
+    setSaving(true);
+    setError('');
+
+    cacheProfile(profile);
+    const token = localStorage.getItem('userToken');
+
+    if (token) {
+      try {
+        const response = await fetch(`${API_URLS.NODE}/api/user/profile`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            name: profile.name,
+            currentRole: profile.currentRole,
+            targetRole: profile.targetRole,
+            yearsExperience: profile.yearsExperience
+          })
+        });
+
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}));
+          throw new Error(errData.message || 'Failed to save profile');
+        }
+
+        const updatedData = await response.json();
+        const nextProfile = {
+          name: updatedData.name || profile.name,
+          email: updatedData.email || profile.email,
+          currentRole: updatedData.currentRole || '',
+          targetRole: updatedData.targetRole || '',
+          yearsExperience: updatedData.yearsExperience === null || updatedData.yearsExperience === undefined
+            ? ''
+            : String(updatedData.yearsExperience)
+        };
+
+        setProfile(nextProfile);
+        cacheProfile(nextProfile);
+      } catch (err) {
+        console.error('Profile save error:', err);
+        setError(err.message || 'Failed to save profile. Please try again.');
+        setSaving(false);
+        return;
+      }
+    }
+
     setEditing(false);
+    setSaving(false);
   };
 
   const handleLogout = async () => {
     try {
       await signOut(auth);
-    } catch (error) {
-      console.error('Logout error:', error);
+    } catch (logoutError) {
+      console.error('Logout error:', logoutError);
     }
+
     localStorage.removeItem('isAuthenticated');
     localStorage.removeItem('userName');
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userToken');
+    localStorage.removeItem('currentRole');
+    localStorage.removeItem('targetRole');
+    localStorage.removeItem('yearsExperience');
     router.push('/login');
   };
+
+  if (loading) {
+    return (
+      <>
+        <header className="mb-8">
+          <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-on-surface font-headline">Profile Management</h1>
+          <p className="text-on-surface-variant">Manage your account settings and preferences</p>
+        </header>
+        <div className="grid max-w-6xl grid-cols-12 gap-8">
+          <div className="col-span-12 lg:col-span-4">
+            <div className="app-card animate-pulse p-8">
+              <div className="mb-8 flex flex-col items-center text-center">
+                <div className="mb-4 h-20 w-20 rounded-full bg-primary/10"></div>
+                <div className="mb-2 h-6 w-32 rounded bg-surface-container-high"></div>
+                <div className="h-4 w-48 rounded bg-surface-container-high"></div>
+              </div>
+              <div className="space-y-4 border-t border-outline/20 pt-6">
+                <div className="h-12 rounded bg-surface-container-high"></div>
+                <div className="h-12 rounded bg-surface-container-high"></div>
+                <div className="h-12 rounded bg-surface-container-high"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
       <header className="mb-8">
-        <h1 className="text-4xl font-extrabold font-headline tracking-tight text-on-surface mb-2">Profile Management</h1>
+        <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-on-surface font-headline">Profile Management</h1>
         <p className="text-on-surface-variant">Manage your account settings and preferences</p>
       </header>
 
-      <div className="grid grid-cols-12 gap-8 max-w-6xl">
-        {/* Profile Card */}
+      <div className="grid max-w-6xl grid-cols-12 gap-8">
         <div className="col-span-12 lg:col-span-4">
           <div className="app-card p-8">
-            <div className="flex flex-col items-center text-center mb-8">
-              <div className="w-20 h-20 rounded-full bg-primary-container/20 flex items-center justify-center mb-4">
-                <span className="material-symbols-outlined text-primary text-5xl">person</span>
+            <div className="mb-8 flex flex-col items-center text-center">
+              <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary-container/20">
+                <span className="material-symbols-outlined text-5xl text-primary">person</span>
               </div>
               <h2 className="text-2xl font-bold text-on-surface">{profile.name}</h2>
-              <p className="text-on-surface-variant text-sm mt-1">{profile.email}</p>
+              <p className="mt-1 text-sm text-on-surface-variant">{profile.email}</p>
             </div>
 
-            <div className="space-y-4 pt-6 border-t border-outline/20">
+            <div className="space-y-4 border-t border-outline/20 pt-6">
               <div className="flex items-center gap-3 text-on-surface-variant">
                 <span className="material-symbols-outlined text-primary">briefcase</span>
                 <div>
-                  <p className="text-xs text-on-surface-variant/70 uppercase">Current Role</p>
-                  <p className="font-semibold">{profile.currentRole}</p>
+                  <p className="text-xs uppercase text-on-surface-variant/70">Current Role</p>
+                  <p className="font-semibold">{profile.currentRole || '—'}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3 text-on-surface-variant">
                 <span className="material-symbols-outlined text-primary">trending_up</span>
                 <div>
-                  <p className="text-xs text-on-surface-variant/70 uppercase">Target Role</p>
-                  <p className="font-semibold">{profile.targetRole}</p>
+                  <p className="text-xs uppercase text-on-surface-variant/70">Target Role</p>
+                  <p className="font-semibold">{profile.targetRole || '—'}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3 text-on-surface-variant">
                 <span className="material-symbols-outlined text-primary">schedule</span>
                 <div>
-                  <p className="text-xs text-on-surface-variant/70 uppercase">Experience</p>
-                  <p className="font-semibold">{profile.yearsExperience} years</p>
+                  <p className="text-xs uppercase text-on-surface-variant/70">Experience</p>
+                  <p className="font-semibold">{profile.yearsExperience ? `${profile.yearsExperience} years` : '—'}</p>
                 </div>
               </div>
             </div>
 
-            <div className="flex gap-3 mt-8 pt-6 border-t border-outline/20">
+            <div className="mt-8 flex gap-3 border-t border-outline/20 pt-6">
               <button
-                onClick={() => setEditing(!editing)}
-                className="flex-1 py-2 bg-primary-container hover:brightness-110 text-white font-bold rounded-lg transition-all flex items-center justify-center gap-2"
+                onClick={() => {
+                  setEditing(!editing);
+                  setError('');
+                }}
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary-container py-2 font-bold text-white transition-all hover:brightness-110"
               >
                 <span className="material-symbols-outlined text-sm">edit</span>
                 Edit
               </button>
               <button
                 onClick={handleLogout}
-                className="flex-1 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-bold rounded-lg transition-all flex items-center justify-center gap-2"
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-red-500/20 py-2 font-bold text-red-400 transition-all hover:bg-red-500/30"
               >
                 <span className="material-symbols-outlined text-sm">logout</span>
                 Logout
@@ -111,15 +249,20 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* Edit Profile Form */}
         {editing && (
           <div className="col-span-12 lg:col-span-8">
             <div className="app-card p-8">
-              <h3 className="text-xl font-bold text-on-surface mb-6">Edit Profile</h3>
+              <h3 className="mb-6 text-xl font-bold text-on-surface">Edit Profile</h3>
+
+              {error && (
+                <div className="mb-6 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-500">
+                  {error}
+                </div>
+              )}
 
               <form className="space-y-6">
                 <div>
-                  <label className="block text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-2">Full Name</label>
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">Full Name</label>
                   <input
                     type="text"
                     name="name"
@@ -130,18 +273,19 @@ export default function Profile() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-2">Email</label>
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">Email</label>
                   <input
                     type="email"
                     name="email"
                     value={profile.email}
-                    onChange={handleChange}
-                    className="app-input"
+                    disabled
+                    className="app-input cursor-not-allowed opacity-70"
                   />
+                  <p className="mt-1 text-xs text-on-surface-variant/70">Email is managed by your authentication provider</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-2">Current Role</label>
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">Current Role</label>
                   <input
                     type="text"
                     name="currentRole"
@@ -152,7 +296,7 @@ export default function Profile() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-2">Target Role</label>
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">Target Role</label>
                   <input
                     type="text"
                     name="targetRole"
@@ -163,7 +307,7 @@ export default function Profile() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-bold text-on-surface-variant uppercase tracking-widest mb-2">Years of Experience</label>
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">Years of Experience</label>
                   <input
                     type="number"
                     name="yearsExperience"
@@ -177,14 +321,19 @@ export default function Profile() {
                   <button
                     type="button"
                     onClick={handleSave}
-                    className="flex-1 py-3 bg-secondary hover:brightness-110 text-white font-bold rounded-lg transition-all"
+                    disabled={saving}
+                    className="flex-1 rounded-lg bg-secondary py-3 font-bold text-white transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    Save Changes
+                    {saving ? 'Saving...' : 'Save Changes'}
                   </button>
                   <button
                     type="button"
-                    onClick={() => setEditing(false)}
-                    className="flex-1 rounded-lg bg-surface-container-high py-3 font-bold text-on-surface transition-all hover:bg-surface-container-highest"
+                    onClick={() => {
+                      setEditing(false);
+                      setError('');
+                    }}
+                    disabled={saving}
+                    className="flex-1 rounded-lg bg-surface-container-high py-3 font-bold text-on-surface transition-all hover:bg-surface-container-highest disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     Cancel
                   </button>
@@ -194,24 +343,23 @@ export default function Profile() {
           </div>
         )}
 
-        {/* Account Settings */}
         <div className="col-span-12 lg:col-span-8">
           <div className="app-card space-y-6 p-8">
             <h3 className="text-xl font-bold text-on-surface">Account Settings</h3>
 
             <div className="space-y-4">
-              <button className="w-full flex items-center justify-between rounded-lg bg-surface p-4 transition-all hover:bg-surface-container-high">
+              <button className="flex w-full items-center justify-between rounded-lg bg-surface p-4 transition-all hover:bg-surface-container-high">
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-primary">notification_important</span>
-                  <span className="text-on-surface font-semibold">Notifications</span>
+                  <span className="font-semibold text-on-surface">Notifications</span>
                 </div>
                 <span className="material-symbols-outlined text-on-surface-variant/70">chevron_right</span>
               </button>
 
-              <button className="w-full flex items-center justify-between rounded-lg bg-surface p-4 transition-all hover:bg-surface-container-high">
+              <button className="flex w-full items-center justify-between rounded-lg bg-surface p-4 transition-all hover:bg-surface-container-high">
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-primary">security</span>
-                  <span className="text-on-surface font-semibold">Security & Privacy</span>
+                  <span className="font-semibold text-on-surface">Security & Privacy</span>
                 </div>
                 <span className="material-symbols-outlined text-on-surface-variant/70">chevron_right</span>
               </button>
@@ -240,10 +388,10 @@ export default function Profile() {
                 </div>
               </button>
 
-              <button className="w-full flex items-center justify-between rounded-lg bg-surface p-4 transition-all hover:bg-surface-container-high">
+              <button className="flex w-full items-center justify-between rounded-lg bg-surface p-4 transition-all hover:bg-surface-container-high">
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-primary">help</span>
-                  <span className="text-on-surface font-semibold">Help & Support</span>
+                  <span className="font-semibold text-on-surface">Help & Support</span>
                 </div>
                 <span className="material-symbols-outlined text-on-surface-variant/70">chevron_right</span>
               </button>
@@ -254,5 +402,3 @@ export default function Profile() {
     </>
   );
 }
-
-

@@ -5,7 +5,9 @@ const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
+    currentRole: { type: String, default: '' },
     targetRole: { type: String, default: 'Software Engineer' },
+    yearsExperience: { type: Number, default: null },
     placementProbability: { type: Number, default: 45 },
     skills: { type: Map, of: Number, default: {} }, // e.g., {'System Design': 85}
     companyFitScores: { type: Map, of: Number, default: {} },

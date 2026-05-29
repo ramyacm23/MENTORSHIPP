@@ -3,6 +3,34 @@ const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+
+async function getAuthenticatedUser(req) {
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return { status: 401, body: { message: 'No token provided' } };
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        const user = await User.findById(decoded.userId);
+
+        if (!user) {
+            return { status: 404, body: { message: 'User not found' } };
+        }
+
+        return { user };
+    } catch (error) {
+        return { status: 401, body: { message: 'Invalid token' } };
+    }
+}
+
+function sanitizeUser(user) {
+    const sanitizedUser = user.toObject();
+    delete sanitizedUser.password;
+    return sanitizedUser;
+}
+
 // Signup endpoint
 router.post('/signup', async (req, res) => {
     try {
@@ -31,7 +59,7 @@ router.post('/signup', async (req, res) => {
         // Generate JWT token
         const token = jwt.sign(
             { userId: newUser._id, email: newUser.email },
-            process.env.JWT_SECRET || 'your-secret-key',
+            JWT_SECRET,
             { expiresIn: '7d' }
         );
 
@@ -82,7 +110,7 @@ router.post('/login', async (req, res) => {
             // Generate JWT token
             const token = jwt.sign(
                 { userId: user._id, email: user.email },
-                process.env.JWT_SECRET || 'your-secret-key',
+                JWT_SECRET,
                 { expiresIn: '7d' }
             );
 
@@ -103,22 +131,61 @@ router.post('/login', async (req, res) => {
 
 // Get current user profile
 router.get('/me', async (req, res) => {
+    const result = await getAuthenticatedUser(req);
+    if (result.status) {
+        return res.status(result.status).json(result.body);
+    }
+
+    res.json(sanitizeUser(result.user));
+});
+
+router.get('/profile', async (req, res) => {
+    const result = await getAuthenticatedUser(req);
+    if (result.status) {
+        return res.status(result.status).json(result.body);
+    }
+
+    res.json(sanitizeUser(result.user));
+});
+
+router.put('/profile', async (req, res) => {
+    const result = await getAuthenticatedUser(req);
+    if (result.status) {
+        return res.status(result.status).json(result.body);
+    }
+
     try {
-        const token = req.headers.authorization?.split(' ')[1];
-        if (!token) {
-            return res.status(401).json({ message: 'No token provided' });
+        const { name, currentRole, targetRole, yearsExperience } = req.body;
+        const user = result.user;
+
+        if (typeof name === 'string') {
+            user.name = name.trim();
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-        const user = await User.findById(decoded.userId).select('-password');
-
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+        if (typeof currentRole === 'string') {
+            user.currentRole = currentRole.trim();
         }
 
-        res.json(user);
+        if (typeof targetRole === 'string') {
+            user.targetRole = targetRole.trim();
+        }
+
+        if (yearsExperience === '' || yearsExperience === null || yearsExperience === undefined) {
+            user.yearsExperience = null;
+        } else {
+            const parsedYears = Number(yearsExperience);
+
+            if (!Number.isFinite(parsedYears) || parsedYears < 0) {
+                return res.status(400).json({ message: 'Years of experience must be a valid non-negative number' });
+            }
+
+            user.yearsExperience = parsedYears;
+        }
+
+        await user.save();
+        res.json(sanitizeUser(user));
     } catch (error) {
-        res.status(401).json({ message: 'Invalid token' });
+        res.status(500).json({ message: error.message || 'Failed to update profile' });
     }
 });
 
@@ -143,10 +210,12 @@ router.get('/:id/profile', async (req, res) => {
                 totalXP: 1240
             });
         }
-        
+
         const user = await User.findById(req.params.id);
-        if (!user) return res.status(404).json({ message: 'User not found' });
-        
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
         res.json({
             placementProbability: user.placementProbability,
             skills: user.skills,
