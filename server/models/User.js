@@ -4,7 +4,8 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+    password: { type: String },
+    firebaseUid: { type: String, unique: true, sparse: true },
     currentRole: { type: String, default: '' },
     targetRole: { type: String, default: 'Software Engineer' },
     yearsExperience: { type: Number, default: null },
@@ -19,16 +20,16 @@ const userSchema = new mongoose.Schema({
 // Hash password before saving
 userSchema.pre('save', function(next) {
     const user = this;
-    
-    // Only hash if password has been modified
-    if (!user.isModified('password')) {
+
+    // Only hash if password is present and has been modified
+    if (!user.password || !user.isModified('password')) {
         return next();
     }
-    
+
     // Generate salt and hash
     bcrypt.genSalt(10, (err, salt) => {
         if (err) return next(err);
-        
+
         bcrypt.hash(user.password, salt, (err, hash) => {
             if (err) return next(err);
             user.password = hash;
@@ -39,6 +40,10 @@ userSchema.pre('save', function(next) {
 
 // Method to compare password
 userSchema.methods.comparePassword = function(candidatePassword, callback) {
+    if (!this.password) {
+        return callback(null, false);
+    }
+
     bcrypt.compare(candidatePassword, this.password, (err, isMatch) => {
         if (err) return callback(err);
         callback(null, isMatch);
