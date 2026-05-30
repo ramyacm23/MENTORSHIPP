@@ -90,7 +90,6 @@ export default function Profile() {
     setSaving(true);
     setError('');
 
-    cacheProfile(profile);
     const token = localStorage.getItem('userToken');
 
     if (token) {
@@ -116,17 +115,18 @@ export default function Profile() {
 
         const updatedData = await response.json();
         const nextProfile = {
-          name: updatedData.name || profile.name,
-          email: updatedData.email || profile.email,
-          currentRole: updatedData.currentRole || '',
-          targetRole: updatedData.targetRole || '',
-          yearsExperience: updatedData.yearsExperience === null || updatedData.yearsExperience === undefined
-            ? ''
-            : String(updatedData.yearsExperience)
+          name: normalizeField(updatedData.name) || profile.name,
+          email: normalizeField(updatedData.email) || profile.email,
+          currentRole: normalizeField(updatedData.currentRole),
+          targetRole: normalizeField(updatedData.targetRole),
+          yearsExperience: normalizeField(updatedData.yearsExperience)
         };
 
         setProfile(nextProfile);
         cacheProfile(nextProfile);
+        setEditing(false);
+        setSaving(false);
+        return;
       } catch (err) {
         console.error('Profile save error:', err);
         setError(err.message || 'Failed to save profile. Please try again.');
@@ -135,6 +135,7 @@ export default function Profile() {
       }
     }
 
+    cacheProfile(profile);
     setEditing(false);
     setSaving(false);
   };

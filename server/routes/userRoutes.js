@@ -2,34 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
-
-async function getAuthenticatedUser(req) {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-        return { status: 401, body: { message: 'No token provided' } };
-    }
-
-    try {
-        const decoded = jwt.verify(token, JWT_SECRET);
-        const user = await User.findById(decoded.userId);
-
-        if (!user) {
-            return { status: 404, body: { message: 'User not found' } };
-        }
-
-        return { user };
-    } catch (error) {
-        return { status: 401, body: { message: 'Invalid token' } };
-    }
-}
-
-function sanitizeUser(user) {
-    const sanitizedUser = user.toObject();
-    delete sanitizedUser.password;
-    return sanitizedUser;
-}
+const authenticateUser = require('../middleware/authMiddleware');
 
 // Signup endpoint
 router.post('/signup', async (req, res) => {
@@ -59,7 +32,7 @@ router.post('/signup', async (req, res) => {
         // Generate JWT token
         const token = jwt.sign(
             { userId: newUser._id, email: newUser.email },
-            JWT_SECRET,
+            process.env.JWT_SECRET || 'your-secret-key',
             { expiresIn: '7d' }
         );
 
@@ -110,7 +83,7 @@ router.post('/login', async (req, res) => {
             // Generate JWT token
             const token = jwt.sign(
                 { userId: user._id, email: user.email },
-                JWT_SECRET,
+                process.env.JWT_SECRET || 'your-secret-key',
                 { expiresIn: '7d' }
             );
 
@@ -131,61 +104,82 @@ router.post('/login', async (req, res) => {
 
 // Get current user profile
 router.get('/me', async (req, res) => {
-    const result = await getAuthenticatedUser(req);
-    if (result.status) {
-        return res.status(result.status).json(result.body);
-    }
-
-    res.json(sanitizeUser(result.user));
-});
-
-router.get('/profile', async (req, res) => {
-    const result = await getAuthenticatedUser(req);
-    if (result.status) {
-        return res.status(result.status).json(result.body);
-    }
-
-    res.json(sanitizeUser(result.user));
-});
-
-router.put('/profile', async (req, res) => {
-    const result = await getAuthenticatedUser(req);
-    if (result.status) {
-        return res.status(result.status).json(result.body);
-    }
-
     try {
-        const { name, currentRole, targetRole, yearsExperience } = req.body;
-        const user = result.user;
-
-        if (typeof name === 'string') {
-            user.name = name.trim();
+        const token = req.headers.authorization?.split(' ')[1];
+        if (!token) {
+            return res.status(401).json({ message: 'No token provided' });
         }
 
-        if (typeof currentRole === 'string') {
-            user.currentRole = currentRole.trim();
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+        const user = await User.findById(decoded.userId).select('-password');
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
         }
 
-        if (typeof targetRole === 'string') {
-            user.targetRole = targetRole.trim();
-        }
-
-        if (yearsExperience === '' || yearsExperience === null || yearsExperience === undefined) {
-            user.yearsExperience = null;
-        } else {
-            const parsedYears = Number(yearsExperience);
-
-            if (!Number.isFinite(parsedYears) || parsedYears < 0) {
-                return res.status(400).json({ message: 'Years of experience must be a valid non-negative number' });
-            }
-
-            user.yearsExperience = parsedYears;
-        }
-
-        await user.save();
-        res.json(sanitizeUser(user));
+        res.json(user);
     } catch (error) {
-        res.status(500).json({ message: error.message || 'Failed to update profile' });
+        res.status(401).json({ message: 'Invalid token' });
+    }
+});
+
+// GET authenticated user profile — fetches profile fields from MongoDB
+router.get('/profile', authenticateUser, async (req, res) => {
+    try {
+        const user = req.user;
+        res.json({
+            name: user.name,
+            email: user.email,
+            currentRole: user.currentRole || '',
+            targetRole: user.targetRole || '',
+            yearsExperience: user.yearsExperience || ''
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// PUT authenticated profile update — persists allowed fields to MongoDB
+const ALLOWED_PROFILE_FIELDS = ['name', 'currentRole', 'targetRole', 'yearsExperience'];
+
+router.put('/profile', authenticateUser, async (req, res) => {
+    try {
+        const updates = {};
+
+        // Whitelist: only pick allowed fields from the request body
+        for (const field of ALLOWED_PROFILE_FIELDS) {
+            if (req.body[field] !== undefined) {
+                const value = String(req.body[field]).trim();
+                if (value.length > 200) {
+                    return res.status(400).json({ message: `${field} must be under 200 characters` });
+                }
+                updates[field] = value;
+            }
+        }
+
+        if (Object.keys(updates).length === 0) {
+            return res.status(400).json({ message: 'No valid fields provided for update' });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user._id,
+            { $set: updates },
+            { new: true, runValidators: true }
+        ).select('-password');
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.json({
+            name: updatedUser.name,
+            email: updatedUser.email,
+            currentRole: updatedUser.currentRole || '',
+            targetRole: updatedUser.targetRole || '',
+            yearsExperience: updatedUser.yearsExperience || ''
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 });
 
@@ -212,9 +206,7 @@ router.get('/:id/profile', async (req, res) => {
         }
 
         const user = await User.findById(req.params.id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
         res.json({
             placementProbability: user.placementProbability,
