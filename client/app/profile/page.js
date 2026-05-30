@@ -7,7 +7,7 @@ import { useTheme } from '@/app/context/ThemeContext';
 import { auth } from '@/lib/firebase';
 import { API_URLS, safeApiFetch } from '@/lib/api';
 
-const EMPTY_PROFILE = { 
+const EMPTY_PROFILE = {
   name: '',
   email: '',
   currentRole: '',
@@ -160,7 +160,9 @@ export default function Profile() {
     return (
       <>
         <header className="mb-8">
-          <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-on-surface font-headline">Profile Management</h1>
+          <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-on-surface font-headline">
+            Profile Management
+          </h1>
           <p className="text-on-surface-variant">Manage your account settings and preferences</p>
         </header>
         <div className="grid max-w-6xl grid-cols-12 gap-8">
@@ -168,13 +170,13 @@ export default function Profile() {
             <div className="app-card animate-pulse p-8">
               <div className="mb-8 flex flex-col items-center text-center">
                 <div className="mb-4 h-20 w-20 rounded-full bg-primary/10"></div>
-                <div className="mb-2 h-6 w-32 rounded bg-surface-container-high"></div>
-                <div className="h-4 w-48 rounded bg-surface-container-high"></div>
+                <div className="mb-2 h-6 w-32 rounded bg-surface-container-high transition-colors"></div>
+                <div className="h-4 w-48 rounded bg-surface-container-high transition-colors"></div>
               </div>
               <div className="space-y-4 border-t border-outline/20 pt-6">
-                <div className="h-12 rounded bg-surface-container-high"></div>
-                <div className="h-12 rounded bg-surface-container-high"></div>
-                <div className="h-12 rounded bg-surface-container-high"></div>
+                <div className="h-12 rounded bg-surface-container-high transition-colors"></div>
+                <div className="h-12 rounded bg-surface-container-high transition-colors"></div>
+                <div className="h-12 rounded bg-surface-container-high transition-colors"></div>
               </div>
             </div>
           </div>
@@ -186,7 +188,9 @@ export default function Profile() {
   return (
     <>
       <header className="mb-8">
-        <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-on-surface font-headline">Profile Management</h1>
+        <h1 className="mb-2 text-4xl font-extrabold tracking-tight text-on-surface font-headline">
+          Profile Management
+        </h1>
         <p className="text-on-surface-variant">Manage your account settings and preferences</p>
       </header>
 
@@ -194,7 +198,7 @@ export default function Profile() {
         <div className="col-span-12 lg:col-span-4">
           <div className="app-card p-8">
             <div className="mb-8 flex flex-col items-center text-center">
-              <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary-container/20">
+              <div className="mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-primary-container/20 transition-colors">
                 <span className="material-symbols-outlined text-5xl text-primary">person</span>
               </div>
               <h2 className="text-2xl font-bold text-on-surface">{profile.name}</h2>
@@ -206,7 +210,7 @@ export default function Profile() {
                 <span className="material-symbols-outlined text-primary">briefcase</span>
                 <div>
                   <p className="text-xs uppercase text-on-surface-variant/70">Current Role</p>
-                  <p className="font-semibold">{profile.currentRole || '—'}</p>
+                  <p className="font-semibold">{profile.currentRole || '-'}</p>
                 </div>
               </div>
 
@@ -214,7 +218,7 @@ export default function Profile() {
                 <span className="material-symbols-outlined text-primary">trending_up</span>
                 <div>
                   <p className="text-xs uppercase text-on-surface-variant/70">Target Role</p>
-                  <p className="font-semibold">{profile.targetRole || '—'}</p>
+                  <p className="font-semibold">{profile.targetRole || '-'}</p>
                 </div>
               </div>
 
@@ -222,7 +226,7 @@ export default function Profile() {
                 <span className="material-symbols-outlined text-primary">schedule</span>
                 <div>
                   <p className="text-xs uppercase text-on-surface-variant/70">Experience</p>
-                  <p className="font-semibold">{profile.yearsExperience ? `${profile.yearsExperience} years` : '—'}</p>
+                  <p className="font-semibold">{profile.yearsExperience ? `${profile.yearsExperience} years` : '-'}</p>
                 </div>
               </div>
             </div>
@@ -233,14 +237,14 @@ export default function Profile() {
                   setEditing(!editing);
                   setError('');
                 }}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary-container py-2 font-bold text-white transition-all hover:brightness-110"
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-primary-container py-2 font-bold text-white transition-all duration-200 hover:brightness-110"
               >
                 <span className="material-symbols-outlined text-sm">edit</span>
                 Edit
               </button>
               <button
                 onClick={handleLogout}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-red-500/20 py-2 font-bold text-red-400 transition-all hover:bg-red-500/30"
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-red-500/20 py-2 font-bold text-red-400 transition-all duration-200 hover:bg-red-500/30"
               >
                 <span className="material-symbols-outlined text-sm">logout</span>
                 Logout
@@ -262,7 +266,9 @@ export default function Profile() {
 
               <form className="space-y-6">
                 <div>
-                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">Full Name</label>
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">
+                    Full Name
+                  </label>
                   <input
                     type="text"
                     name="name"
@@ -273,7 +279,9 @@ export default function Profile() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">Email</label>
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">
+                    Email
+                  </label>
                   <input
                     type="email"
                     name="email"
@@ -281,11 +289,15 @@ export default function Profile() {
                     disabled
                     className="app-input cursor-not-allowed opacity-70"
                   />
-                  <p className="mt-1 text-xs text-on-surface-variant/70">Email is managed by your authentication provider</p>
+                  <p className="mt-1 text-xs text-on-surface-variant/70">
+                    Email is managed by your authentication provider
+                  </p>
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">Current Role</label>
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">
+                    Current Role
+                  </label>
                   <input
                     type="text"
                     name="currentRole"
@@ -296,7 +308,9 @@ export default function Profile() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">Target Role</label>
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">
+                    Target Role
+                  </label>
                   <input
                     type="text"
                     name="targetRole"
@@ -307,7 +321,9 @@ export default function Profile() {
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">Years of Experience</label>
+                  <label className="mb-2 block text-sm font-bold uppercase tracking-widest text-on-surface-variant">
+                    Years of Experience
+                  </label>
                   <input
                     type="number"
                     name="yearsExperience"
@@ -322,7 +338,7 @@ export default function Profile() {
                     type="button"
                     onClick={handleSave}
                     disabled={saving}
-                    className="flex-1 rounded-lg bg-secondary py-3 font-bold text-white transition-all hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex-1 rounded-lg bg-secondary py-3 font-bold text-white transition-all duration-200 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {saving ? 'Saving...' : 'Save Changes'}
                   </button>
@@ -333,7 +349,7 @@ export default function Profile() {
                       setError('');
                     }}
                     disabled={saving}
-                    className="flex-1 rounded-lg bg-surface-container-high py-3 font-bold text-on-surface transition-all hover:bg-surface-container-highest disabled:cursor-not-allowed disabled:opacity-50"
+                    className="flex-1 rounded-lg bg-surface-container-high py-3 font-bold text-on-surface transition-all duration-200 hover:bg-surface-container-highest disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     Cancel
                   </button>
@@ -348,7 +364,7 @@ export default function Profile() {
             <h3 className="text-xl font-bold text-on-surface">Account Settings</h3>
 
             <div className="space-y-4">
-              <button className="flex w-full items-center justify-between rounded-lg bg-surface p-4 transition-all hover:bg-surface-container-high">
+              <button className="flex w-full items-center justify-between rounded-lg bg-surface p-4 transition-all duration-200 hover:bg-surface-container-high">
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-primary">notification_important</span>
                   <span className="font-semibold text-on-surface">Notifications</span>
@@ -356,10 +372,10 @@ export default function Profile() {
                 <span className="material-symbols-outlined text-on-surface-variant/70">chevron_right</span>
               </button>
 
-              <button className="flex w-full items-center justify-between rounded-lg bg-surface p-4 transition-all hover:bg-surface-container-high">
+              <button className="flex w-full items-center justify-between rounded-lg bg-surface p-4 transition-all duration-200 hover:bg-surface-container-high">
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-primary">security</span>
-                  <span className="font-semibold text-on-surface">Security & Privacy</span>
+                  <span className="font-semibold text-on-surface">Security &amp; Privacy</span>
                 </div>
                 <span className="material-symbols-outlined text-on-surface-variant/70">chevron_right</span>
               </button>
@@ -367,7 +383,7 @@ export default function Profile() {
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="w-full rounded-lg border border-primary/15 bg-primary/5 p-4 text-left transition-all hover:border-primary/30 hover:bg-primary/10"
+                className="w-full rounded-lg border border-primary/15 bg-primary/5 p-4 text-left transition-all duration-200 hover:border-primary/30 hover:bg-primary/10"
               >
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
@@ -388,10 +404,10 @@ export default function Profile() {
                 </div>
               </button>
 
-              <button className="flex w-full items-center justify-between rounded-lg bg-surface p-4 transition-all hover:bg-surface-container-high">
+              <button className="flex w-full items-center justify-between rounded-lg bg-surface p-4 transition-all duration-200 hover:bg-surface-container-high">
                 <div className="flex items-center gap-3">
                   <span className="material-symbols-outlined text-primary">help</span>
-                  <span className="font-semibold text-on-surface">Help & Support</span>
+                  <span className="font-semibold text-on-surface">Help &amp; Support</span>
                 </div>
                 <span className="material-symbols-outlined text-on-surface-variant/70">chevron_right</span>
               </button>
